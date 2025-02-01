@@ -1,0 +1,30 @@
+[project]
+name = "django-async-extensions"
+version = "0.0.1"
+description = "provide async capable stuff for django"
+authors = [
+    {name = "amirreza",email = "amir.rsf1380@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "django >= 4.2"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+ruff = "^0.9.4"
+pre-commit = "^4.1.0"
+
+[tool.ruff.lint]
+select = ["T201", "E", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401", "F403"]
+
