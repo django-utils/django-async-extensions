@@ -10,7 +10,7 @@ from django.apps import apps
 from django.conf import settings
 from django.test.utils import NullTimeKeeper, TimeKeeper, get_runner
 
-RUNTESTS_DIR = pathlib.Path(__file__).parent.absolute()
+RUNTESTS_DIR = pathlib.Path(__file__).parent
 TEMPLATE_DIR = RUNTESTS_DIR / "templates"
 TMPDIR = tempfile.mkdtemp(prefix="django_")
 
@@ -32,6 +32,15 @@ ALWAYS_MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
+# Need to add the associated contrib app to INSTALLED_APPS in some cases to
+# avoid "RuntimeError: Model class X doesn't declare an explicit app_label
+# and isn't in an application in INSTALLED_APPS."
+CONTRIB_TESTS_TO_APPS = {
+    "deprecation": ["django.contrib.flatpages", "django.contrib.redirects"],
+    "flatpages_tests": ["django.contrib.flatpages"],
+    "redirects_tests": ["django.contrib.redirects"],
+}
+
 
 def get_test_modules():
     discovery_dirs = [""]
@@ -48,7 +57,7 @@ def get_test_modules():
                 test_module = f.name
                 if dirname:
                     test_module = dirname + "." + test_module
-                yield "tests/" + test_module
+                yield test_module
 
 
 def get_label_module(label):
@@ -142,8 +151,24 @@ def get_installed():
     return [app_config.name for app_config in apps.get_app_configs()]
 
 
+def get_apps_to_install(test_modules):
+    for test_module in test_modules:
+        if test_module in CONTRIB_TESTS_TO_APPS:
+            yield from CONTRIB_TESTS_TO_APPS[test_module]
+        yield test_module
+
+
 def setup_run_tests(verbosity, start_at, start_after, test_labels=None):
     test_modules, state = setup_collect_tests(start_at, start_after, test_labels)
+    installed_apps = set(get_installed())
+    for app in get_apps_to_install(test_modules):
+        if app in installed_apps:
+            continue
+        if verbosity >= 2:
+            print(f"Importing application {app}")  # noqa T201
+        settings.INSTALLED_APPS.append(app)
+        installed_apps.add(app)
+
     apps.set_installed_apps(settings.INSTALLED_APPS)
     # Set an environment variable that other code may consult to see if
     # Django's own test suite is running.

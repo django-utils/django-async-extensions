@@ -31,5 +31,4 @@ class PytestTestRunner:
         if self.keepdb:
             argv.append("--reuse-db")
 
-        argv.extend(test_labels)
         return pytest.main(argv)
