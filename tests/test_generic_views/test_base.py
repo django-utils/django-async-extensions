@@ -56,11 +56,11 @@ class AboutTemplateView(AsyncTemplateView):
         return self.render_to_response({})
 
     def get_template_names(self):
-        return ["generic_views/about.html"]
+        return ["test_generic_views/about.html"]
 
 
 class AboutTemplateAttributeView(AsyncTemplateView):
-    template_name = "generic_views/about.html"
+    template_name = "test_generic_views/about.html"
 
     async def get(self, request):
         return self.render_to_response(context={})
@@ -336,9 +336,9 @@ class TestAsyncTemplateView:
         with the template name as an argument at instantiation.
         """
         self._assert_about(
-            await AsyncTemplateView.as_view(template_name="generic_views/about.html")(
-                self.rf.get("/about/")
-            )
+            await AsyncTemplateView.as_view(
+                template_name="test_generic_views/about.html"
+            )(self.rf.get("/about/"))
         )
 
     def test_template_name_required(self):
@@ -358,14 +358,16 @@ class TestAsyncTemplateView:
         A template view may provide a template engine.
         """
         request = self.rf.get("/using/")
-        view = await AsyncTemplateView.as_view(template_name="generic_views/using.html")
-        assert view(request).render().content == b"DTL\n"
         view = await AsyncTemplateView.as_view(
-            template_name="generic_views/using.html", template_engine="django"
+            template_name="test_generic_views/using.html"
         )
         assert view(request).render().content == b"DTL\n"
         view = await AsyncTemplateView.as_view(
-            template_name="generic_views/using.html", template_engine="jinja2"
+            template_name="test_generic_views/using.html", template_engine="django"
+        )
+        assert view(request).render().content == b"DTL\n"
+        view = await AsyncTemplateView.as_view(
+            template_name="test_generic_views/using.html", template_engine="jinja2"
         )
         assert view(request).render().content == b"Jinja2\n"
 
@@ -490,20 +492,20 @@ class TestAsyncRedirectView:
         assert response.status_code == 302
         assert response.url == "/bar/42/"
 
-    # async def test_named_url_pattern(self):
-    #     "Named pattern parameter should reverse to the matching pattern"
-    #     response = await AsyncRedirectView.as_view(pattern_name="artist_detail")(
-    #         self.rf.get("/foo/"), pk=1
-    #     )
-    #     assert response.status_code == 302
-    #     assert response.headers["Location"] == "/detail/artist/1/"
+    async def test_named_url_pattern(self):
+        "Named pattern parameter should reverse to the matching pattern"
+        response = await AsyncRedirectView.as_view(pattern_name="artist_detail")(
+            self.rf.get("/foo/"), pk=1
+        )
+        assert response.status_code == 302
+        assert response.headers["Location"] == "/detail/artist/1/"
 
-    # async def test_named_url_pattern_using_args(self):
-    #     response = await AsyncRedirectView.as_view(pattern_name="artist_detail")(
-    #         self.rf.get("/foo/"), 1
-    #     )
-    #     assert response.status_code == 302
-    #     self.assertEqual(response.headers["Location"], "/detail/artist/1/")
+    async def test_named_url_pattern_using_args(self):
+        response = await AsyncRedirectView.as_view(pattern_name="artist_detail")(
+            self.rf.get("/foo/"), 1
+        )
+        assert response.status_code == 302
+        assert response.headers["Location"] == "/detail/artist/1/"
 
     async def test_redirect_POST(self):
         "Default is a temporary redirect"
