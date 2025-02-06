@@ -78,6 +78,9 @@ urlpatterns = [
     path("detail/author/invalid/qs/", views.AuthorDetail.as_view(queryset=None)),
     path("detail/nonmodel/1/", views.NonModelDetail.as_view()),
     path("detail/doesnotexist/<pk>/", views.ObjectDoesNotExistDetail.as_view()),
+    # FormView
+    path("contact/", views.ContactView.as_view()),
+    path("late-validation/", views.LateValidationView.as_view()),
     # Useful for testing redirects
     path("accounts/login/", auth_views.LoginView.as_view()),
     # path("BaseDateListViewTest/", dates.BaseDateListView.as_view()),

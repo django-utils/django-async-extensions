@@ -1,5 +1,8 @@
+from django.urls import reverse_lazy
+
 from django_async_extensions.aviews import generic
 
+from .forms import ContactForm
 from .models import Artist, Author, Page, Book
 
 
@@ -81,3 +84,26 @@ class NonModelDetail(generic.AsyncDetailView):
 class ObjectDoesNotExistDetail(generic.AsyncDetailView):
     async def get_queryset(self):
         return Book.does_not_exist.all()
+
+
+class ContactView(generic.AsyncFormView):
+    form_class = ContactForm
+    success_url = reverse_lazy("authors_list")
+    template_name = "test_generic_views/form.html"
+
+
+class LateValidationView(generic.AsyncFormView):
+    form_class = ContactForm
+    success_url = reverse_lazy("authors_list")
+    template_name = "test_generic_views/form.html"
+
+    async def form_valid(self, form):
+        form.add_error(None, "There is an error")
+        return await self.form_invalid(form)
+
+
+class AuthorGetQuerySetFormView(generic.edit.AsyncModelFormMixin):
+    fields = "__all__"
+
+    async def get_queryset(self):
+        return Author.objects.all()
