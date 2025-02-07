@@ -11,6 +11,7 @@
 # situations, so it is recommended to run the test suite against as many
 # database backends as possible.  You may want to create a separate settings
 # file for each of the backends you test against.
+import os
 
 
 DATABASES = {
@@ -33,3 +34,35 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 USE_TZ = False
 TEST_RUNNER = "tests.runner.PytestTestRunner"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s %(levelname)s %(pathname)s:%(lineno)s - %(message)s",
+            "style": "%",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": os.getenv("PROJECT_LOG_LEVEL", "WARN"),
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL_DJANGO", "WARN"),
+        },
+        "django.db": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL_DB", "WARN"),
+            "propagate": False,
+        },
+    },
+}
