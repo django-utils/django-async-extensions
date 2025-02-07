@@ -81,6 +81,62 @@ urlpatterns = [
     # FormView
     path("contact/", views.ContactView.as_view()),
     path("late-validation/", views.LateValidationView.as_view()),
+    # ListView
+    path("list/dict/", views.DictList.as_view()),
+    path("list/dict/paginated/", views.DictList.as_view(paginate_by=1)),
+    path("list/artists/", views.ArtistList.as_view(), name="artists_list"),
+    path("list/authors/", views.AuthorList.as_view(), name="authors_list"),
+    path("list/authors/paginated/", views.AuthorList.as_view(paginate_by=30)),
+    path(
+        "list/authors/paginated/<int:page>/", views.AuthorList.as_view(paginate_by=30)
+    ),
+    path(
+        "list/authors/paginated-orphaned/",
+        views.AuthorList.as_view(paginate_by=30, paginate_orphans=2),
+    ),
+    path("list/authors/notempty/", views.AuthorList.as_view(allow_empty=False)),
+    path(
+        "list/authors/notempty/paginated/",
+        views.AuthorList.as_view(allow_empty=False, paginate_by=2),
+    ),
+    path(
+        "list/authors/template_name/",
+        views.AuthorList.as_view(template_name="test_generic_views/list.html"),
+    ),
+    path(
+        "list/authors/template_name_suffix/",
+        views.AuthorList.as_view(template_name_suffix="_objects"),
+    ),
+    path(
+        "list/authors/context_object_name/",
+        views.AuthorList.as_view(context_object_name="author_list"),
+    ),
+    path(
+        "list/authors/dupe_context_object_name/",
+        views.AuthorList.as_view(context_object_name="object_list"),
+    ),
+    path("list/authors/invalid/", views.AuthorList.as_view(queryset=None)),
+    path(
+        "list/authors/get_queryset/",
+        views.AuthorListGetQuerysetReturnsNone.as_view(),
+    ),
+    path(
+        "list/authors/paginated/custom_class/",
+        views.AuthorList.as_view(paginate_by=5, paginator_class=views.CustomPaginator),
+    ),
+    path(
+        "list/authors/paginated/custom_page_kwarg/",
+        views.AuthorList.as_view(paginate_by=30, page_kwarg="pagina"),
+    ),
+    path(
+        "list/authors/paginated/custom_constructor/",
+        views.AuthorListCustomPaginator.as_view(),
+    ),
+    path("list/books/sorted/", views.BookList.as_view(ordering="name")),
+    path(
+        "list/books/sortedbypagesandnamedec/",
+        views.BookList.as_view(ordering=("pages", "-name")),
+    ),
     # Useful for testing redirects
     path("accounts/login/", auth_views.LoginView.as_view()),
     # path("BaseDateListViewTest/", dates.BaseDateListView.as_view()),

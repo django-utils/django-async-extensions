@@ -1,5 +1,6 @@
 from django.urls import reverse_lazy
 
+from django_async_extensions.acore.paginator import AsyncPaginator
 from django_async_extensions.aviews import generic
 
 from .forms import ContactForm
@@ -107,3 +108,64 @@ class AuthorGetQuerySetFormView(generic.edit.AsyncModelFormMixin):
 
     async def get_queryset(self):
         return Author.objects.all()
+
+
+class DictList(generic.AsyncListView):
+    """A ListView that doesn't use a model."""
+
+    queryset = [{"first": "John", "last": "Lennon"}, {"first": "Yoko", "last": "Ono"}]
+    template_name = "test_generic_views/list.html"
+
+
+class ArtistList(generic.AsyncListView):
+    template_name = "test_generic_views/list.html"
+    queryset = Artist.objects.all()
+
+
+class AuthorList(generic.AsyncListView):
+    queryset = Author.objects.all()
+
+
+class AuthorListGetQuerysetReturnsNone(AuthorList):
+    async def get_queryset(self):
+        return None
+
+
+class BookList(generic.AsyncListView):
+    model = Book
+
+
+class CustomPaginator(AsyncPaginator):
+    def __init__(self, queryset, page_size, orphans=0, allow_empty_first_page=True):
+        super().__init__(
+            queryset,
+            page_size,
+            orphans=2,
+            allow_empty_first_page=allow_empty_first_page,
+        )
+
+
+class AuthorListCustomPaginator(AuthorList):
+    paginate_by = 5
+
+    def get_paginator(
+        self, queryset, page_size, orphans=0, allow_empty_first_page=True
+    ):
+        return super().get_paginator(
+            queryset,
+            page_size,
+            orphans=2,
+            allow_empty_first_page=allow_empty_first_page,
+        )
+
+
+class CustomMultipleObjectMixinView(
+    generic.list.AsyncMultipleObjectMixin, generic.AsyncView
+):
+    queryset = [
+        {"name": "John"},
+        {"name": "Yoko"},
+    ]
+
+    async def get(self, request):
+        self.object_list = await self.get_queryset()
