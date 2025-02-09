@@ -3,6 +3,8 @@ from asyncio import iscoroutinefunction
 from math import ceil
 
 from asgiref.sync import sync_to_async
+
+from django.core.exceptions import SynchronousOnlyOperation
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.utils.inspect import method_has_no_args
 
@@ -64,11 +66,7 @@ class AsyncPaginator(Paginator):
         count = await self.acount()
         if top + self.orphans >= count:
             top = count
-        if not isinstance(self.object_list, list):
-            self.object_list = await sync_to_async(list)(self.object_list)
-            object_list = self.object_list[bottom:top]
-        else:
-            object_list = self.object_list[bottom:top]
+        object_list = self.object_list[bottom:top]
 
         return self._get_page(object_list, number, self)
 
@@ -88,7 +86,11 @@ class AsyncPaginator(Paginator):
         ):
             count = await c()
         else:
-            count = len(self.object_list)
+            try:
+                # if somehow the `__len__` method works in a sync manner
+                count = len(self.object_list)
+            except SynchronousOnlyOperation:
+                count = len(await sync_to_async(list)(self.object_list))
 
         self._cache_acount = count
 
@@ -174,14 +176,17 @@ class AsyncPage:
         return "<Async Page %s>" % self.number
 
     async def __aiter__(self):
-        await self._afetch_object_list()
-
-        for obj in self.object_list:
-            yield obj
+        if hasattr(self.object_list, "__aiter__"):
+            async for obj in self.object_list:
+                yield obj
+        else:
+            # this is so if object_list is actually a list, iteration doesn't fail
+            for obj in self.object_list:
+                yield obj
 
     async def _afetch_object_list(self):
         if not isinstance(self.object_list, list):
-            self.object_list = await sync_to_async(list)(self.object_list)
+            self.object_list = await self.alist()
 
     async def agetitem(self, index):
         if not isinstance(index, (int, slice)):
@@ -190,12 +195,18 @@ class AsyncPage:
                 % type(index).__name__
             )
 
+        # in the sync version, when `__getitem__` is called it turns the queryset
+        # into a list, which errors since this is async code, so we handle that here
         await self._afetch_object_list()
         return self.object_list[index]
 
-    async def alength(self):
-        await self._afetch_object_list()
-        return len(self.object_list)
+    async def alen(self):
+        return len(await self.alist())
+
+    async def alist(self):
+        if hasattr(self.object_list, "__aiter__"):
+            return [obj async for obj in self.object_list]
+        return await sync_to_async(list)(self.object_list)
 
     async def ahas_next(self):
         num_pages = await self.paginator.anum_pages()
