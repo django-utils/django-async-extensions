@@ -3,8 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.views.decorators.cache import cache_page
 
-from django_async_extensions.aviews.generic import AsyncTemplateView
+from django_async_extensions.aviews.generic import AsyncTemplateView, dates
 
+from .models import Book
 from . import views
 
 urlpatterns = [
@@ -137,7 +138,187 @@ urlpatterns = [
         "list/books/sortedbypagesandnamedec/",
         views.BookList.as_view(ordering=("pages", "-name")),
     ),
+    # ArchiveIndexView
+    path("dates/books/", views.BookArchive.as_view()),
+    path(
+        "dates/books/context_object_name/",
+        views.BookArchive.as_view(context_object_name="thingies"),
+    ),
+    path("dates/books/allow_empty/", views.BookArchive.as_view(allow_empty=True)),
+    path(
+        "dates/books/template_name/",
+        views.BookArchive.as_view(template_name="test_generic_views/list.html"),
+    ),
+    path(
+        "dates/books/template_name_suffix/",
+        views.BookArchive.as_view(template_name_suffix="_detail"),
+    ),
+    path("dates/books/invalid/", views.BookArchive.as_view(queryset=None)),
+    path("dates/books/paginated/", views.BookArchive.as_view(paginate_by=10)),
+    path(
+        "dates/books/reverse/",
+        views.BookArchive.as_view(queryset=Book.objects.order_by("pubdate")),
+    ),
+    path("dates/books/by_month/", views.BookArchive.as_view(date_list_period="month")),
+    path("dates/booksignings/", views.BookSigningArchive.as_view()),
+    path("dates/books/sortedbyname/", views.BookArchive.as_view(ordering="name")),
+    path("dates/books/sortedbynamedec/", views.BookArchive.as_view(ordering="-name")),
+    path(
+        "dates/books/without_date_field/", views.BookArchiveWithoutDateField.as_view()
+    ),
+    # YearArchiveView
+    # Mixing keyword and positional captures below is intentional; the views
+    # ought to be able to accept either.
+    path("dates/books/<int:year>/", views.BookYearArchive.as_view()),
+    path(
+        "dates/books/<int:year>/make_object_list/",
+        views.BookYearArchive.as_view(make_object_list=True),
+    ),
+    path(
+        "dates/books/<int:year>/allow_empty/",
+        views.BookYearArchive.as_view(allow_empty=True),
+    ),
+    path(
+        "dates/books/<int:year>/allow_future/",
+        views.BookYearArchive.as_view(allow_future=True),
+    ),
+    path(
+        "dates/books/<int:year>/paginated/",
+        views.BookYearArchive.as_view(make_object_list=True, paginate_by=30),
+    ),
+    path(
+        "dates/books/<int:year>/sortedbyname/",
+        views.BookYearArchive.as_view(make_object_list=True, ordering="name"),
+    ),
+    path(
+        "dates/books/<int:year>/sortedbypageandnamedec/",
+        views.BookYearArchive.as_view(
+            make_object_list=True, ordering=("pages", "-name")
+        ),
+    ),
+    path("dates/books/no_year/", views.BookYearArchive.as_view()),
+    path(
+        "dates/books/<int:year>/reverse/",
+        views.BookYearArchive.as_view(queryset=Book.objects.order_by("pubdate")),
+    ),
+    path("dates/booksignings/<int:year>/", views.BookSigningYearArchive.as_view()),
+    # MonthArchiveView
+    path(
+        "dates/books/<int:year>/<int:month>/",
+        views.BookMonthArchive.as_view(month_format="%m"),
+    ),
+    path("dates/books/<int:year>/<month>/", views.BookMonthArchive.as_view()),
+    path("dates/books/without_month/<int:year>/", views.BookMonthArchive.as_view()),
+    path(
+        "dates/books/<int:year>/<month>/allow_empty/",
+        views.BookMonthArchive.as_view(allow_empty=True),
+    ),
+    path(
+        "dates/books/<int:year>/<month>/allow_future/",
+        views.BookMonthArchive.as_view(allow_future=True),
+    ),
+    path(
+        "dates/books/<int:year>/<month>/paginated/",
+        views.BookMonthArchive.as_view(paginate_by=30),
+    ),
+    path("dates/books/<int:year>/no_month/", views.BookMonthArchive.as_view()),
+    path(
+        "dates/booksignings/<int:year>/<month>/",
+        views.BookSigningMonthArchive.as_view(),
+    ),
+    # WeekArchiveView
+    path("dates/books/<int:year>/week/<int:week>/", views.BookWeekArchive.as_view()),
+    path(
+        "dates/books/<int:year>/week/<int:week>/allow_empty/",
+        views.BookWeekArchive.as_view(allow_empty=True),
+    ),
+    path(
+        "dates/books/<int:year>/week/<int:week>/allow_future/",
+        views.BookWeekArchive.as_view(allow_future=True),
+    ),
+    path(
+        "dates/books/<int:year>/week/<int:week>/paginated/",
+        views.BookWeekArchive.as_view(paginate_by=30),
+    ),
+    path("dates/books/<int:year>/week/no_week/", views.BookWeekArchive.as_view()),
+    path(
+        "dates/books/<int:year>/week/<int:week>/monday/",
+        views.BookWeekArchive.as_view(week_format="%W"),
+    ),
+    path(
+        "dates/books/<int:year>/week/<int:week>/unknown_week_format/",
+        views.BookWeekArchive.as_view(week_format="%T"),
+    ),
+    path(
+        "dates/books/<int:year>/week/<int:week>/iso_format/",
+        views.BookWeekArchive.as_view(year_format="%G", week_format="%V"),
+    ),
+    path(
+        "dates/books/<int:year>/week/<int:week>/invalid_iso_week_year_format/",
+        views.BookWeekArchive.as_view(week_format="%V"),
+    ),
+    path(
+        "dates/booksignings/<int:year>/week/<int:week>/",
+        views.BookSigningWeekArchive.as_view(),
+    ),
+    # DayArchiveView
+    path(
+        "dates/books/<int:year>/<int:month>/<int:day>/",
+        views.BookDayArchive.as_view(month_format="%m"),
+    ),
+    path("dates/books/<int:year>/<month>/<int:day>/", views.BookDayArchive.as_view()),
+    path(
+        "dates/books/<int:year>/<month>/<int:day>/allow_empty/",
+        views.BookDayArchive.as_view(allow_empty=True),
+    ),
+    path(
+        "dates/books/<int:year>/<month>/<int:day>/allow_future/",
+        views.BookDayArchive.as_view(allow_future=True),
+    ),
+    path(
+        "dates/books/<int:year>/<month>/<int:day>/allow_empty_and_future/",
+        views.BookDayArchive.as_view(allow_empty=True, allow_future=True),
+    ),
+    path(
+        "dates/books/<int:year>/<month>/<int:day>/paginated/",
+        views.BookDayArchive.as_view(paginate_by=True),
+    ),
+    path("dates/books/<int:year>/<month>/no_day/", views.BookDayArchive.as_view()),
+    path(
+        "dates/booksignings/<int:year>/<month>/<int:day>/",
+        views.BookSigningDayArchive.as_view(),
+    ),
+    # TodayArchiveView
+    path("dates/books/today/", views.BookTodayArchive.as_view()),
+    path(
+        "dates/books/today/allow_empty/",
+        views.BookTodayArchive.as_view(allow_empty=True),
+    ),
+    path("dates/booksignings/today/", views.BookSigningTodayArchive.as_view()),
+    # DateDetailView
+    path(
+        "dates/books/<int:year>/<int:month>/<day>/<int:pk>/",
+        views.BookDetail.as_view(month_format="%m"),
+    ),
+    path("dates/books/<int:year>/<month>/<day>/<int:pk>/", views.BookDetail.as_view()),
+    path(
+        "dates/books/<int:year>/<month>/<int:day>/<int:pk>/allow_future/",
+        views.BookDetail.as_view(allow_future=True),
+    ),
+    path("dates/books/<int:year>/<month>/<int:day>/nopk/", views.BookDetail.as_view()),
+    path(
+        "dates/books/<int:year>/<month>/<int:day>/byslug/<slug:slug>/",
+        views.BookDetail.as_view(),
+    ),
+    path(
+        "dates/books/get_object_custom_queryset/<int:year>/<month>/<int:day>/<int:pk>/",
+        views.BookDetailGetObjectCustomQueryset.as_view(),
+    ),
+    path(
+        "dates/booksignings/<int:year>/<month>/<int:day>/<int:pk>/",
+        views.BookSigningDetail.as_view(),
+    ),
     # Useful for testing redirects
     path("accounts/login/", auth_views.LoginView.as_view()),
-    # path("BaseDateListViewTest/", dates.BaseDateListView.as_view()),
+    path("BaseDateListViewTest/", dates.BaseDateListView.as_view()),
 ]

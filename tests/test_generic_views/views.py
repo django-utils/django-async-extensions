@@ -4,7 +4,7 @@ from django_async_extensions.acore.paginator import AsyncPaginator
 from django_async_extensions.aviews import generic
 
 from .forms import ContactForm
-from .models import Artist, Author, Page, Book
+from .models import Artist, Author, Page, Book, BookSigning
 
 
 class CustomTemplateView(generic.AsyncTemplateView):
@@ -169,3 +169,84 @@ class CustomMultipleObjectMixinView(
 
     async def get(self, request):
         self.object_list = await self.get_queryset()
+
+
+class BookConfig:
+    queryset = Book.objects.all()
+    date_field = "pubdate"
+
+
+class BookArchive(BookConfig, generic.AsyncArchiveIndexView):
+    pass
+
+
+class BookYearArchive(BookConfig, generic.AsyncYearArchiveView):
+    pass
+
+
+class BookMonthArchive(BookConfig, generic.AsyncMonthArchiveView):
+    pass
+
+
+class BookWeekArchive(BookConfig, generic.AsyncWeekArchiveView):
+    pass
+
+
+class BookDayArchive(BookConfig, generic.AsyncDayArchiveView):
+    pass
+
+
+class BookTodayArchive(BookConfig, generic.AsyncTodayArchiveView):
+    pass
+
+
+class BookDetail(BookConfig, generic.AsyncDateDetailView):
+    pass
+
+
+class BookDetailGetObjectCustomQueryset(BookDetail):
+    async def get_object(self, queryset=None):
+        return await super().get_object(
+            queryset=Book.objects.filter(pk=self.kwargs["pk"])
+        )
+
+
+class BookSigningConfig:
+    model = BookSigning
+    date_field = "event_date"
+    # use the same templates as for books
+
+    def get_template_names(self):
+        return ["test_generic_views/book%s.html" % self.template_name_suffix]
+
+
+class BookSigningArchive(BookSigningConfig, generic.AsyncArchiveIndexView):
+    pass
+
+
+class BookSigningYearArchive(BookSigningConfig, generic.AsyncYearArchiveView):
+    pass
+
+
+class BookSigningMonthArchive(BookSigningConfig, generic.AsyncMonthArchiveView):
+    pass
+
+
+class BookSigningWeekArchive(BookSigningConfig, generic.AsyncWeekArchiveView):
+    pass
+
+
+class BookSigningDayArchive(BookSigningConfig, generic.AsyncDayArchiveView):
+    pass
+
+
+class BookSigningTodayArchive(BookSigningConfig, generic.AsyncTodayArchiveView):
+    pass
+
+
+class BookArchiveWithoutDateField(generic.AsyncArchiveIndexView):
+    queryset = Book.objects.all()
+
+
+class BookSigningDetail(BookSigningConfig, generic.AsyncDateDetailView):
+    context_object_name = "book"
