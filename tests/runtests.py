@@ -109,6 +109,7 @@ def setup_collect_tests(start_at, start_after, test_labels=None):
     }
 
     settings.INSTALLED_APPS = ALWAYS_INSTALLED_APPS
+    settings.ROOT_URLCONF = "urls"
     settings.LANGUAGE_CODE = "en"
     settings.SITE_ID = 1
     settings.MIDDLEWARE = ALWAYS_MIDDLEWARE
