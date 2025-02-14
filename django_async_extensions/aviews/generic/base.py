@@ -111,12 +111,18 @@ class AsyncView(View):
 
 
 class AsyncTemplateView(TemplateResponseMixin, ContextMixin, AsyncView):
+    """
+    Render a template. Pass keyword arguments from the URLconf to the context.
+    """
+
     async def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
 
 class AsyncRedirectView(AsyncView, RedirectView):
+    """Provide a redirect on any GET request."""
+
     async def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
