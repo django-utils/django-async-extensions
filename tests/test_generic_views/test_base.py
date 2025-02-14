@@ -1,10 +1,10 @@
+import pathlib
 import re
 import time
 
 from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse
 from django.test import RequestFactory, Client
-from django.test.utils import require_jinja2
 from django.urls import resolve
 
 import pytest
@@ -14,6 +14,14 @@ from django_async_extensions.aviews.generic import (
     AsyncTemplateView,
     AsyncRedirectView,
 )
+
+try:
+    import jinja2
+except ImportError:
+    jinja2 = None
+
+
+TEMPLATE_DIR = pathlib.Path(__file__).parent.parent / "templates"
 
 client = Client()
 
@@ -352,24 +360,38 @@ class TestAsyncTemplateView:
         with pytest.raises(ImproperlyConfigured, match=msg):
             client.get("/template/no_template/")
 
-    @require_jinja2
-    async def test_template_engine(self):
+    @pytest.mark.skipif(jinja2 is None, reason="this test requires jinja2")
+    async def test_template_engine(self, settings):
         """
         A template view may provide a template engine.
         """
+        settings.TEMPLATES = [
+            {
+                "BACKEND": "django.template.backends.django.DjangoTemplates",
+                "DIRS": [TEMPLATE_DIR],
+                "APP_DIRS": True,
+            },
+            {
+                "BACKEND": "django.template.backends.jinja2.Jinja2",
+                "APP_DIRS": True,
+                "OPTIONS": {"keep_trailing_newline": True},
+            },
+        ]
+
         request = self.rf.get("/using/")
-        view = await AsyncTemplateView.as_view(
-            template_name="test_generic_views/using.html"
-        )
-        assert view(request).render().content == b"DTL\n"
-        view = await AsyncTemplateView.as_view(
+        view = AsyncTemplateView.as_view(template_name="test_generic_views/using.html")
+        view = await view(request)
+        assert view.render().content == b"DTL\n"
+        view = AsyncTemplateView.as_view(
             template_name="test_generic_views/using.html", template_engine="django"
         )
-        assert view(request).render().content == b"DTL\n"
-        view = await AsyncTemplateView.as_view(
+        view = await view(request)
+        assert view.render().content == b"DTL\n"
+        view = AsyncTemplateView.as_view(
             template_name="test_generic_views/using.html", template_engine="jinja2"
         )
-        assert view(request).render().content == b"Jinja2\n"
+        view = await view(request)
+        assert view.render().content == b"Jinja2\n"
 
     def test_template_params(self):
         """
