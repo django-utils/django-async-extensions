@@ -13,6 +13,8 @@ from django_async_extensions.aviews.generic.base import AsyncView
 
 
 class AsyncMultipleObjectMixin(MultipleObjectMixin):
+    """A mixin for views manipulating multiple objects."""
+
     paginator_class = AsyncPaginator
 
     async def get_queryset(self):
@@ -43,6 +45,7 @@ class AsyncMultipleObjectMixin(MultipleObjectMixin):
         return queryset
 
     async def paginate_queryset(self, queryset, page_size):
+        """Paginate the queryset, if needed."""
         paginator = self.get_paginator(
             queryset,
             page_size,
