@@ -30,8 +30,6 @@ class AsyncPaginator(Paginator):
             yield await self.apage(page_number)
 
     def _validate_number(self, number, num_pages):
-        """Validate the given 1-based page number."""
-
         try:
             if isinstance(number, float) and not number.is_integer():
                 raise ValueError
@@ -46,10 +44,15 @@ class AsyncPaginator(Paginator):
         return number
 
     async def avalidate_number(self, number):
+        """Validate the given 1-based page number."""
         num_page = await self.anum_pages()
         return self._validate_number(number, num_page)
 
     async def aget_page(self, number):
+        """
+        Return a valid page, even if the page argument isn't a number or isn't
+        in range.
+        """
         try:
             number = await self.avalidate_number(number)
         except PageNotAnInteger:
@@ -59,7 +62,7 @@ class AsyncPaginator(Paginator):
         return await self.apage(number)
 
     async def apage(self, number):
-        """See Paginator.page()."""
+        """Return a AsyncPage object for the given 1-based page number."""
         number = await self.avalidate_number(number)
         bottom = (number - 1) * self.per_page
         top = bottom + self.per_page
@@ -71,10 +74,16 @@ class AsyncPaginator(Paginator):
         return self._get_page(object_list, number, self)
 
     def _get_page(self, *args, **kwargs):
+        """
+        Return an instance of a single page.
+
+        This hook can be used by subclasses to use an alternative to the
+        standard :cls:`AsyncPage` object.
+        """
         return AsyncPage(*args, **kwargs)
 
     async def acount(self):
-        """See Paginator.count()."""
+        """Return the total number of objects, across all pages."""
         if self._cache_acount is not None:
             return self._cache_acount
 
@@ -97,7 +106,7 @@ class AsyncPaginator(Paginator):
         return count
 
     async def anum_pages(self):
-        """See Paginator.num_pages()."""
+        """Return the total number of pages."""
         if self._cache_anum_pages is not None:
             return self._cache_anum_pages
 
@@ -113,11 +122,24 @@ class AsyncPaginator(Paginator):
         return num_pages
 
     async def apage_range(self):
-        """See Paginator.page_range()"""
+        """
+        Return a 1-based range of pages for iterating through within
+        a template for loop.
+        """
         num_pages = await self.anum_pages()
         return range(1, num_pages + 1)
 
     async def aget_elided_page_range(self, number=1, *, on_each_side=3, on_ends=2):
+        """
+        Return a 1-based range of pages with some values elided.
+
+        If the page range is larger than a given size, the whole range is not
+        provided and a compact form is returned instead, e.g. for a paginator
+        with 50 pages, if page 43 were the current page, the output, with the
+        default arguments, would be:
+
+            1, 2, …, 40, 41, 42, 43, 44, 45, 46, …, 49, 50.
+        """
         number = await self.avalidate_number(number)
         num_pages = await self.anum_pages()
         page_range = await self.apage_range()
@@ -130,16 +152,6 @@ class AsyncPaginator(Paginator):
     def _get_elided_page_range(
         self, number, num_pages, page_range, on_each_side=3, on_ends=2
     ):
-        """
-        Return a 1-based range of pages with some values elided.
-
-        If the page range is larger than a given size, the whole range is not
-        provided and a compact form is returned instead, e.g. for a paginator
-        with 50 pages, if page 43 were the current page, the output, with the
-        default arguments, would be:
-
-            1, 2, …, 40, 41, 42, 43, 44, 45, 46, …, 49, 50.
-        """
         if num_pages <= (on_each_side + on_ends) * 2:
             for page in page_range:
                 yield page
@@ -201,9 +213,11 @@ class AsyncPage:
         return self.object_list[index]
 
     async def alen(self):
+        """an async interface to be used instead of `len(page)`"""
         return len(await self.alist())
 
     async def alist(self):
+        """make a list of the items in the queryset"""
         if hasattr(self.object_list, "__aiter__"):
             return [obj async for obj in self.object_list]
         return await sync_to_async(list)(self.object_list)
@@ -227,14 +241,21 @@ class AsyncPage:
         return await self.paginator.avalidate_number(self.number - 1)
 
     async def astart_index(self):
-        """See Page.start_index()."""
+        """
+        Return the 1-based index of the first object on this page,
+        relative to total objects in the paginator.
+        """
         count = await self.paginator.acount()
         if count == 0:
             return 0
         return (self.paginator.per_page * (self.number - 1)) + 1
 
     async def aend_index(self):
-        """See Page.end_index()."""
+        """
+        Return the 1-based index of the last object on this page,
+        relative to total objects found (hits).
+        """
+        # Special case for the last page because there can be orphans.
         num_pages = await self.paginator.anum_pages()
         if self.number == num_pages:
             return await self.paginator.acount()
