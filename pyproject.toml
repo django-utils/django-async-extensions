@@ -28,6 +28,11 @@ pytest-subtests = "^0.14.1"
 pytest-mock = "^3.14.0"
 psycopg = {extras = ["binary", "pool"], version = "^3.2.4"}
 
+
+[tool.poetry.group.doc.dependencies]
+mkdocs = "^1.6.1"
+
+
 [tool.poetry.group.ipython.dependencies]
 ipython = "^8.32.0"
 
