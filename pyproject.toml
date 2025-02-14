@@ -9,7 +9,7 @@ license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "django >= 4.2"
+    "django >= 4.2",
 ]
 
 
@@ -26,6 +26,7 @@ pytest-asyncio = "^0.25.3"
 pytest-django = "^4.9.0"
 pytest-subtests = "^0.14.1"
 pytest-mock = "^3.14.0"
+psycopg = {extras = ["binary", "pool"], version = "^3.2.4"}
 
 [tool.ruff.lint]
 select = ["T201", "E", "F", "S", "DJ"]
