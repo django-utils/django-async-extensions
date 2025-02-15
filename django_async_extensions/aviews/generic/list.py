@@ -3,19 +3,24 @@ from django.core.paginator import InvalidPage
 from django.db.models import QuerySet
 from django.http import Http404
 from django.utils.translation import gettext as _
-from django.views.generic.list import (
-    MultipleObjectMixin,
-    MultipleObjectTemplateResponseMixin,
-)
+from django.views.generic.list import MultipleObjectTemplateResponseMixin
 
 from django_async_extensions.acore.paginator import AsyncPaginator
-from django_async_extensions.aviews.generic.base import AsyncView
+from django_async_extensions.aviews.generic.base import AsyncView, AsyncContextMixin
 
 
-class AsyncMultipleObjectMixin(MultipleObjectMixin):
+class AsyncMultipleObjectMixin(AsyncContextMixin):
     """A mixin for views manipulating multiple objects."""
 
+    allow_empty = True
+    queryset = None
+    model = None
+    paginate_by = None
+    paginate_orphans = 0
+    context_object_name = None
     paginator_class = AsyncPaginator
+    page_kwarg = "page"
+    ordering = None
 
     async def get_queryset(self):
         """
@@ -43,6 +48,10 @@ class AsyncMultipleObjectMixin(MultipleObjectMixin):
             queryset = queryset.order_by(*ordering)
 
         return queryset
+
+    def get_ordering(self):
+        """Return the field or fields to use for ordering the queryset."""
+        return self.ordering
 
     async def paginate_queryset(self, queryset, page_size):
         """Paginate the queryset, if needed."""
@@ -72,6 +81,47 @@ class AsyncMultipleObjectMixin(MultipleObjectMixin):
                 % {"page_number": page_number, "message": str(e)}
             )
 
+    def get_paginate_by(self, queryset):
+        """
+        Get the number of items to paginate by, or ``None`` for no pagination.
+        """
+        return self.paginate_by
+
+    def get_paginator(
+        self, queryset, per_page, orphans=0, allow_empty_first_page=True, **kwargs
+    ):
+        """Return an instance of the paginator for this view."""
+        return self.paginator_class(
+            queryset,
+            per_page,
+            orphans=orphans,
+            allow_empty_first_page=allow_empty_first_page,
+            **kwargs,
+        )
+
+    def get_paginate_orphans(self):
+        """
+        Return the maximum number of orphans extend the last page by when
+        paginating.
+        """
+        return self.paginate_orphans
+
+    def get_allow_empty(self):
+        """
+        Return ``True`` if the view should display empty lists and ``False``
+        if a 404 should be raised instead.
+        """
+        return self.allow_empty
+
+    def get_context_object_name(self, object_list):
+        """Get the name of the item to be used in the context."""
+        if self.context_object_name:
+            return self.context_object_name
+        elif hasattr(object_list, "model"):
+            return "%s_list" % object_list.model._meta.model_name
+        else:
+            return None
+
     async def get_context_data(self, *, object_list=None, **kwargs):
         """Get the context for this view."""
         queryset = object_list if object_list is not None else self.object_list
@@ -97,10 +147,7 @@ class AsyncMultipleObjectMixin(MultipleObjectMixin):
         if context_object_name is not None:
             context[context_object_name] = queryset
         context.update(kwargs)
-        context.setdefault("view", self)
-        if self.extra_context is not None:
-            context.update(self.extra_context)
-        return context
+        return await super().get_context_data(**context)
 
 
 class AsyncBaseListView(AsyncMultipleObjectMixin, AsyncView):

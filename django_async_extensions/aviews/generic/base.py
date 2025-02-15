@@ -9,12 +9,26 @@ from django.utils.decorators import classonlymethod
 from django.utils.functional import classproperty
 from django.views.generic.base import (
     View,
-    ContextMixin,
     TemplateResponseMixin,
     RedirectView,
 )
 
 logger = logging.getLogger("django.request")
+
+
+class AsyncContextMixin:
+    """
+    A default context mixin that passes the keyword arguments received by
+    get_context_data() as the template context.
+    """
+
+    extra_context = None
+
+    async def get_context_data(self, **kwargs):
+        kwargs.setdefault("view", self)
+        if self.extra_context is not None:
+            kwargs.update(self.extra_context)
+        return kwargs
 
 
 class AsyncView(View):
@@ -110,13 +124,13 @@ class AsyncView(View):
         return response
 
 
-class AsyncTemplateView(TemplateResponseMixin, ContextMixin, AsyncView):
+class AsyncTemplateView(TemplateResponseMixin, AsyncContextMixin, AsyncView):
     """
     Render a template. Pass keyword arguments from the URLconf to the context.
     """
 
     async def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
+        context = await self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
 

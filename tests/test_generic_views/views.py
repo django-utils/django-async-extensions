@@ -10,8 +10,8 @@ from .models import Artist, Author, Page, Book, BookSigning
 class CustomTemplateView(generic.AsyncTemplateView):
     template_name = "test_generic_views/about.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    async def get_context_data(self, **kwargs):
+        context = await super().get_context_data(**kwargs)
         context.update({"key": "value"})
         return context
 

@@ -1,16 +1,30 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import models as model_forms
 from django.http import HttpResponseRedirect
-from django.views.generic.base import ContextMixin, TemplateResponseMixin
-from django.views.generic.edit import FormMixin
+from django.views.generic.base import TemplateResponseMixin
 
-from django_async_extensions.aviews.generic.base import AsyncView
+from django_async_extensions.aviews.generic.base import AsyncView, AsyncContextMixin
 from django_async_extensions.aviews.generic.detail import (
     AsyncSingleObjectMixin,
 )
 
 
-class AsyncFormMixin(FormMixin):
+class AsyncFormMixin(AsyncContextMixin):
+    """Provide a way to show and handle a form in a request."""
+
+    initial = {}
+    form_class = None
+    success_url = None
+    prefix = None
+
+    def get_initial(self):
+        """Return the initial data to use for forms on this view."""
+        return self.initial.copy()
+
+    def get_prefix(self):
+        """Return the prefix to use for forms."""
+        return self.prefix
+
     async def get_form_class(self):
         """Return the form class to use."""
         # this is async so subclasses can be of the same nature
@@ -21,6 +35,28 @@ class AsyncFormMixin(FormMixin):
         if form_class is None:
             form_class = await self.get_form_class()
         return form_class(**self.get_form_kwargs())
+
+    def get_form_kwargs(self):
+        """Return the keyword arguments for instantiating the form."""
+        kwargs = {
+            "initial": self.get_initial(),
+            "prefix": self.get_prefix(),
+        }
+
+        if self.request.method in ("POST", "PUT"):
+            kwargs.update(
+                {
+                    "data": self.request.POST,
+                    "files": self.request.FILES,
+                }
+            )
+        return kwargs
+
+    def get_success_url(self):
+        """Return the URL to redirect to after processing a valid form."""
+        if not self.success_url:
+            raise ImproperlyConfigured("No URL to redirect to. Provide a success_url.")
+        return str(self.success_url)  # success_url may be lazy
 
     async def form_valid(self, form):
         """If the form is valid, redirect to the supplied URL."""
@@ -34,7 +70,7 @@ class AsyncFormMixin(FormMixin):
         """Insert the form into the context dict."""
         if "form" not in kwargs:
             kwargs["form"] = await self.get_form()
-        return ContextMixin().get_context_data(**kwargs)
+        return await super().get_context_data(**kwargs)
 
 
 class AsyncModelFormMixin(AsyncFormMixin, AsyncSingleObjectMixin):
@@ -72,10 +108,31 @@ class AsyncModelFormMixin(AsyncFormMixin, AsyncSingleObjectMixin):
 
             return model_forms.modelform_factory(model, fields=self.fields)
 
+    def get_form_kwargs(self):
+        """Return the keyword arguments for instantiating the form."""
+        kwargs = super().get_form_kwargs()
+        if hasattr(self, "object"):
+            kwargs.update({"instance": self.object})
+        return kwargs
+
+    def get_success_url(self):
+        """Return the URL to redirect to after processing a valid form."""
+        if self.success_url:
+            url = self.success_url.format(**self.object.__dict__)
+        else:
+            try:
+                url = self.object.get_absolute_url()
+            except AttributeError:
+                raise ImproperlyConfigured(
+                    "No URL to redirect to.  Either provide a url or define"
+                    " a get_absolute_url method on the Model."
+                )
+        return url
+
     async def form_valid(self, form):
         """If the form is valid, save the associated model."""
         self.object = await form.asave()
-        return super().form_valid(form)
+        return await super().form_valid(form)
 
 
 class AsyncProcessFormView(AsyncView):

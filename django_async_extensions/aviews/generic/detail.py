@@ -1,15 +1,27 @@
 from django.core.exceptions import ImproperlyConfigured
+from django.db import models
 from django.http import Http404
 from django.views.generic.detail import (
-    SingleObjectMixin,
     SingleObjectTemplateResponseMixin,
 )
 from django.utils.translation import gettext as _
 
-from django_async_extensions.aviews.generic.base import AsyncView
+from django_async_extensions.aviews.generic.base import AsyncView, AsyncContextMixin
 
 
-class AsyncSingleObjectMixin(SingleObjectMixin):
+class AsyncSingleObjectMixin(AsyncContextMixin):
+    """
+    Provide the ability to retrieve a single object for further manipulation.
+    """
+
+    model = None
+    queryset = None
+    slug_field = "slug"
+    context_object_name = None
+    slug_url_kwarg = "slug"
+    pk_url_kwarg = "pk"
+    query_pk_and_slug = False
+
     async def get_object(self, queryset=None):
         """
         Return the object the view is displaying.
@@ -70,6 +82,30 @@ class AsyncSingleObjectMixin(SingleObjectMixin):
                 )
         return self.queryset.all()
 
+    def get_slug_field(self):
+        """Get the name of a slug field to be used to look up by slug."""
+        return self.slug_field
+
+    def get_context_object_name(self, obj):
+        """Get the name to use for the object."""
+        if self.context_object_name:
+            return self.context_object_name
+        elif isinstance(obj, models.Model):
+            return obj._meta.model_name
+        else:
+            return None
+
+    async def get_context_data(self, **kwargs):
+        """Insert the single object into the context dict."""
+        context = {}
+        if self.object:
+            context["object"] = self.object
+            context_object_name = self.get_context_object_name(self.object)
+            if context_object_name:
+                context[context_object_name] = self.object
+        context.update(kwargs)
+        return await super().get_context_data(**context)
+
 
 class AsyncBaseDetailView(AsyncSingleObjectMixin, AsyncView):
     """
@@ -80,7 +116,7 @@ class AsyncBaseDetailView(AsyncSingleObjectMixin, AsyncView):
 
     async def get(self, request, *args, **kwargs):
         self.object = await self.get_object()
-        context = self.get_context_data(object=self.object)
+        context = await self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
 

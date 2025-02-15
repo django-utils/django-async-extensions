@@ -320,5 +320,5 @@ urlpatterns = [
     ),
     # Useful for testing redirects
     path("accounts/login/", auth_views.LoginView.as_view()),
-    path("BaseDateListViewTest/", dates.BaseDateListView.as_view()),
+    path("BaseDateListViewTest/", dates.AsyncBaseDateListView.as_view()),
 ]

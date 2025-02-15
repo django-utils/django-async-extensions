@@ -382,7 +382,7 @@ class TestYearArchiveView(TestDataMixin):
         assert kwargs["next_year"] is None
 
     def test_get_dated_items_not_implemented(self):
-        msg = "A DateView must provide an implementation of get_dated_items()"
+        msg = "An AsyncDateView must provide an implementation of get_dated_items()"
         with pytest.raises(NotImplementedError, match=msg):
             client.get("/BaseDateListViewTest/")
 

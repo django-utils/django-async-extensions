@@ -6,8 +6,6 @@ from django.http import Http404
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views.generic.dates import (
-    BaseDateListView,
-    BaseYearArchiveView,
     timezone_today,
     _date_from_string,
     YearMixin,
@@ -75,15 +73,30 @@ class AsyncDateMixin(DateMixin):
         return self._cached_uses_datetime
 
 
-class AsyncBaseDateListView(
-    AsyncMultipleObjectMixin, AsyncDateMixin, AsyncView, BaseDateListView
-):
+class AsyncBaseDateListView(AsyncMultipleObjectMixin, AsyncDateMixin, AsyncView):
+    """Abstract base class for date-based views displaying a list of objects."""
+
+    allow_empty = False
+    date_list_period = "year"
+
     async def get(self, request, *args, **kwargs):
         self.date_list, self.object_list, extra_context = await self.get_dated_items()
         context = await self.get_context_data(
             object_list=self.object_list, date_list=self.date_list, **extra_context
         )
         return self.render_to_response(context)
+
+    async def get_dated_items(self):
+        raise NotImplementedError(
+            "An AsyncDateView must provide an implementation of get_dated_items()"
+        )
+
+    def get_ordering(self):
+        """
+        Return the field or fields to use for ordering the queryset; use the
+        date field by default.
+        """
+        return "-%s" % self.get_date_field() if self.ordering is None else self.ordering
 
     async def get_dated_queryset(self, **lookup):
         """
@@ -121,10 +134,12 @@ class AsyncBaseDateListView(
 
         return qs
 
-    async def get_dated_items(self):
-        raise NotImplementedError(
-            "An AsyncDateView must provide an implementation of get_dated_items()"
-        )
+    def get_date_list_period(self):
+        """
+        Get the aggregation period for the list of dates: 'year', 'month', or
+        'day'.
+        """
+        return self.date_list_period
 
     async def get_date_list(self, queryset, date_type=None, ordering="ASC"):
         """
@@ -181,9 +196,12 @@ class AsyncArchiveIndexView(
     template_name_suffix = "_archive"
 
 
-class AsyncBaseYearArchiveView(
-    AsyncYearMixin, AsyncBaseDateListView, BaseYearArchiveView
-):
+class AsyncBaseYearArchiveView(AsyncYearMixin, AsyncBaseDateListView):
+    """List of objects published in a given year."""
+
+    date_list_period = "month"
+    make_object_list = False
+
     async def get_dated_items(self):
         """Return (date_list, items, extra_context) for this request."""
         year = self.get_year()
@@ -215,6 +233,13 @@ class AsyncBaseYearArchiveView(
                 "previous_year": await self.get_previous_year(date),
             },
         )
+
+    def get_make_object_list(self):
+        """
+        Return `True` if this view should contain the full list of objects in
+        the given year.
+        """
+        return self.make_object_list
 
 
 class AsyncYearArchiveView(
