@@ -80,7 +80,7 @@ class AsyncUserPassesTestMixin(AsyncAccessMixin):
     False.
     """
 
-    def test_func(self):
+    async def test_func(self):
         raise NotImplementedError(
             "{} is missing the implementation of the test_func() method.".format(
                 self.__class__.__name__
@@ -94,7 +94,7 @@ class AsyncUserPassesTestMixin(AsyncAccessMixin):
         return self.test_func
 
     async def dispatch(self, request, *args, **kwargs):
-        user_test_result = self.get_test_func()()
+        user_test_result = await self.get_test_func()()
         if not user_test_result:
             return await self.handle_no_permission()
         return await super().dispatch(request, *args, **kwargs)
