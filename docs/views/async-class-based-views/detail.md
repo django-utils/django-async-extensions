@@ -14,7 +14,7 @@ class MyDetailView(AsyncDetailView):
 1. `get_object()` method is async.
 2. `get_queryset()` method is async.
 3. `get()` method is async.
-4. `AsyncDetailView` inherits from [AsyncView](async-class-based-views.md#asyncview) so anything mentioned there also applies here.
+4. `AsyncDetailView` inherits from [AsyncView](base.md#asyncview) so anything mentioned there also applies here.
 
 
 ## Base classes

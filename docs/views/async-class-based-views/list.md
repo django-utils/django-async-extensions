@@ -16,7 +16,7 @@ class MyListView(AsyncListView):
 3. `get_context_data()` method is async.
 4. `get()` method is async.
 5. [AsyncPaginator](../../core/async-paginator.md) is used for pagination instead of django's regular [Paginator](https://docs.djangoproject.com/en/5.1/ref/paginator/#django.core.paginator.Paginator).
-6. `AsyncListView` inherits from [AsyncView](async-class-based-views.md#asyncview) so anything mentioned there also applies here.
+6. `AsyncListView` inherits from [AsyncView](base.md#asyncview) so anything mentioned there also applies here.
 
 ## Base classes
 some of the base classes for `ListView` have been re-written as async:
