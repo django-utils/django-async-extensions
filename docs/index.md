@@ -2,6 +2,10 @@
 
 django-async-extensions is a project that brings async support to things that django doesn't/can't support.
 
+## Installation
+
+check out the [installation](installation.md) guide for how to get this package.
+
 ## Features
 
 * async generic class based views.
