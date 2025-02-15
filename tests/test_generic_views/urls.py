@@ -1,6 +1,6 @@
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
-from django.urls import path
+from django.urls import path, re_path
 from django.views.decorators.cache import cache_page
 
 from django_async_extensions.aviews.generic import AsyncTemplateView, dates
@@ -82,6 +82,65 @@ urlpatterns = [
     # FormView
     path("contact/", views.ContactView.as_view()),
     path("late-validation/", views.LateValidationView.as_view()),
+    # Create/Update/DeleteView
+    path("edit/artists/create/", views.ArtistCreate.as_view()),
+    path("edit/artists/<int:pk>/update/", views.ArtistUpdate.as_view()),
+    path("edit/authors/create/naive/", views.NaiveAuthorCreate.as_view()),
+    path(
+        "edit/authors/create/redirect/",
+        views.NaiveAuthorCreate.as_view(success_url="/edit/authors/create/"),
+    ),
+    path(
+        "edit/authors/create/interpolate_redirect/",
+        views.NaiveAuthorCreate.as_view(success_url="/edit/author/{id}/update/"),
+    ),
+    path(
+        "edit/authors/create/interpolate_redirect_nonascii/",
+        views.NaiveAuthorCreate.as_view(success_url="/%C3%A9dit/author/{id}/update/"),
+    ),
+    path("edit/authors/create/restricted/", views.AuthorCreateRestricted.as_view()),
+    re_path("^[eé]dit/authors/create/$", views.AuthorCreate.as_view()),
+    path("edit/authors/create/special/", views.SpecializedAuthorCreate.as_view()),
+    path("edit/author/<int:pk>/update/naive/", views.NaiveAuthorUpdate.as_view()),
+    path(
+        "edit/author/<int:pk>/update/redirect/",
+        views.NaiveAuthorUpdate.as_view(success_url="/edit/authors/create/"),
+    ),
+    path(
+        "edit/author/<int:pk>/update/interpolate_redirect/",
+        views.NaiveAuthorUpdate.as_view(success_url="/edit/author/{id}/update/"),
+    ),
+    path(
+        "edit/author/<int:pk>/update/interpolate_redirect_nonascii/",
+        views.NaiveAuthorUpdate.as_view(success_url="/%C3%A9dit/author/{id}/update/"),
+    ),
+    re_path("^[eé]dit/author/(?P<pk>[0-9]+)/update/$", views.AuthorUpdate.as_view()),
+    path("edit/author/update/", views.OneAuthorUpdate.as_view()),
+    path(
+        "edit/author/<int:pk>/update/special/", views.SpecializedAuthorUpdate.as_view()
+    ),
+    path("edit/author/<int:pk>/delete/naive/", views.NaiveAuthorDelete.as_view()),
+    path(
+        "edit/author/<int:pk>/delete/redirect/",
+        views.NaiveAuthorDelete.as_view(success_url="/edit/authors/create/"),
+    ),
+    path(
+        "edit/author/<int:pk>/delete/interpolate_redirect/",
+        views.NaiveAuthorDelete.as_view(
+            success_url="/edit/authors/create/?deleted={id}"
+        ),
+    ),
+    path(
+        "edit/author/<int:pk>/delete/interpolate_redirect_nonascii/",
+        views.NaiveAuthorDelete.as_view(
+            success_url="/%C3%A9dit/authors/create/?deleted={id}"
+        ),
+    ),
+    path("edit/author/<int:pk>/delete/", views.AuthorDelete.as_view()),
+    path(
+        "edit/author/<int:pk>/delete/special/", views.SpecializedAuthorDelete.as_view()
+    ),
+    path("edit/author/<int:pk>/delete/form/", views.AuthorDeleteFormView.as_view()),
     # ListView
     path("list/dict/", views.DictList.as_view()),
     path("list/dict/paginated/", views.DictList.as_view(paginate_by=1)),

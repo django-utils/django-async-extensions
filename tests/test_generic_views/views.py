@@ -1,9 +1,17 @@
-from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy, reverse
+from django.utils.decorators import method_decorator
 
 from django_async_extensions.acore.paginator import AsyncPaginator
 from django_async_extensions.aviews import generic
 
-from .forms import ContactForm
+from .forms import (
+    ContactForm,
+    AuthorForm,
+    ConfirmDeleteForm,
+    AuthorModelForm,
+    ArtistModelForm,
+)
 from .models import Artist, Author, Page, Book, BookSigning
 
 
@@ -101,6 +109,99 @@ class LateValidationView(generic.AsyncFormView):
     async def form_valid(self, form):
         form.add_error(None, "There is an error")
         return await self.form_invalid(form)
+
+
+class ArtistCreate(generic.AsyncCreateView):
+    model = Artist
+    form_class = ArtistModelForm
+
+
+class NaiveAuthorCreate(generic.AsyncCreateView):
+    queryset = Author.objects.all()
+    form_class = AuthorModelForm
+
+
+class AuthorCreate(generic.AsyncCreateView):
+    model = Author
+    success_url = "/list/authors/"
+    form_class = AuthorModelForm
+
+
+class SpecializedAuthorCreate(generic.AsyncCreateView):
+    model = Author
+    form_class = AuthorForm
+    template_name = "test_generic_views/form.html"
+    context_object_name = "thingy"
+
+    def get_success_url(self):
+        return reverse("author_detail", args=[self.object.id])
+
+
+class AuthorCreateRestricted(AuthorCreate):
+    post = method_decorator(login_required)(AuthorCreate.post)
+
+
+class ArtistUpdate(generic.AsyncUpdateView):
+    model = Artist
+    form_class = ArtistModelForm
+
+
+class NaiveAuthorUpdate(generic.AsyncUpdateView):
+    queryset = Author.objects.all()
+    form_class = ArtistModelForm
+
+
+class AuthorUpdate(generic.AsyncUpdateView):
+    get_form_called_count = 0  # Used to ensure get_form() is called once.
+    model = Author
+    success_url = "/list/authors/"
+    form_class = AuthorModelForm
+
+    async def get_form(self, *args, **kwargs):
+        self.get_form_called_count += 1
+        return await super().get_form(*args, **kwargs)
+
+
+class OneAuthorUpdate(generic.AsyncUpdateView):
+    success_url = "/list/authors/"
+    form_class = AuthorModelForm
+
+    async def get_object(self):
+        return await Author.objects.aget(pk=1)
+
+
+class SpecializedAuthorUpdate(generic.AsyncUpdateView):
+    model = Author
+    form_class = AuthorForm
+    template_name = "test_generic_views/form.html"
+    context_object_name = "thingy"
+
+    def get_success_url(self):
+        return reverse("author_detail", args=[self.object.id])
+
+
+class NaiveAuthorDelete(generic.AsyncDeleteView):
+    queryset = Author.objects.all()
+
+
+class AuthorDelete(generic.AsyncDeleteView):
+    model = Author
+    success_url = "/list/authors/"
+
+
+class AuthorDeleteFormView(generic.AsyncDeleteView):
+    model = Author
+    form_class = ConfirmDeleteForm
+
+    def get_success_url(self):
+        return reverse("authors_list")
+
+
+class SpecializedAuthorDelete(generic.AsyncDeleteView):
+    queryset = Author.objects.all()
+    template_name = "test_generic_views/confirm_delete.html"
+    context_object_name = "thingy"
+    success_url = reverse_lazy("authors_list")
 
 
 class AuthorGetQuerySetFormView(generic.edit.AsyncModelFormMixin):
