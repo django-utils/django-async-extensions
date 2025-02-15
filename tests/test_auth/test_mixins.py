@@ -24,12 +24,12 @@ async def auser(request, user):
 
 
 class AlwaysTrueMixin(AsyncUserPassesTestMixin):
-    def test_func(self):
+    async def test_func(self):
         return True
 
 
 class AlwaysFalseMixin(AsyncUserPassesTestMixin):
-    def test_func(self):
+    async def test_func(self):
         return False
 
 
