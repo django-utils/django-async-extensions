@@ -49,4 +49,11 @@ class ThisRedirectView(AsyncRedirectView):
     pattern_name = "that-view"
 ```
 
-`AsyncRedirectView` works like django's [RedirectView](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#redirectview) except that all http methods are async.
+`AsyncRedirectView` works like django's [RedirectView](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#redirectview) except that all http methods are async, and it inherits from [AsyncView](base.md#asyncview).
+
+*Ancestors (MRO)*:
+
+1. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+2. [django.views.generic.base.RedirectView](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#redirectview)
+3. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
+
