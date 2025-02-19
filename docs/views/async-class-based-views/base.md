@@ -57,3 +57,8 @@ class ThisRedirectView(AsyncRedirectView):
 2. [django.views.generic.base.RedirectView](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#redirectview)
 3. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
 
+## Base classes
+
+### AsyncContextMixin
+an async version of django's [ContextMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.ContextMixin)
+the only difference is that the `get_context_data()` method is async.
