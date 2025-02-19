@@ -9,8 +9,6 @@ from .forms import (
     ContactForm,
     AuthorForm,
     ConfirmDeleteForm,
-    AuthorModelForm,
-    ArtistModelForm,
 )
 from .models import Artist, Author, Page, Book, BookSigning
 
@@ -113,18 +111,18 @@ class LateValidationView(generic.AsyncFormView):
 
 class ArtistCreate(generic.AsyncCreateView):
     model = Artist
-    form_class = ArtistModelForm
+    fields = "__all__"
 
 
 class NaiveAuthorCreate(generic.AsyncCreateView):
     queryset = Author.objects.all()
-    form_class = AuthorModelForm
+    fields = "__all__"
 
 
 class AuthorCreate(generic.AsyncCreateView):
     model = Author
     success_url = "/list/authors/"
-    form_class = AuthorModelForm
+    fields = "__all__"
 
 
 class SpecializedAuthorCreate(generic.AsyncCreateView):
@@ -143,19 +141,19 @@ class AuthorCreateRestricted(AuthorCreate):
 
 class ArtistUpdate(generic.AsyncUpdateView):
     model = Artist
-    form_class = ArtistModelForm
+    fields = "__all__"
 
 
 class NaiveAuthorUpdate(generic.AsyncUpdateView):
     queryset = Author.objects.all()
-    form_class = ArtistModelForm
+    fields = "__all__"
 
 
 class AuthorUpdate(generic.AsyncUpdateView):
     get_form_called_count = 0  # Used to ensure get_form() is called once.
     model = Author
     success_url = "/list/authors/"
-    form_class = AuthorModelForm
+    fields = "__all__"
 
     async def get_form(self, *args, **kwargs):
         self.get_form_called_count += 1
@@ -164,7 +162,7 @@ class AuthorUpdate(generic.AsyncUpdateView):
 
 class OneAuthorUpdate(generic.AsyncUpdateView):
     success_url = "/list/authors/"
-    form_class = AuthorModelForm
+    fields = "__all__"
 
     async def get_object(self):
         return await Author.objects.aget(pk=1)
