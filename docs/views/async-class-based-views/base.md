@@ -28,7 +28,14 @@ class MyTemplateView(AsyncTemplateView):
     template_name = "template.html"
 ```
 
-`AsyncTemplateView` works like django's [TemplateView](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#templateview) except that the `get()` method is async.
+`AsyncTemplateView` works like django's [TemplateView](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#templateview) except the inheritance tree is different, also the `get()` method is async.
+
+*Ancestors (MRO)*:
+
+1. [django.views.generic.base.TemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.TemplateResponseMixin)
+2. [django_async_extensions.aviews.generic.base.AsyncContextMixin](base.md#asynccontextmixin)
+3. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+4. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
 
 
 ## AsyncRedirectView
