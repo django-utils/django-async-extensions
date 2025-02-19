@@ -1,4 +1,6 @@
 site_name: django async extensions
+site_url: https://django-async-extensions.readthedocs.io/en/latest/
+site_description: django-async-extensions documentation
 repo_url: https://github.com/amirreza8002/django-async-extensions
 
 markdown_extensions:
