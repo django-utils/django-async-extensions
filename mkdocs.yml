@@ -1,9 +1,31 @@
 site_name: django async extensions
 repo_url: https://github.com/amirreza8002/django-async-extensions
 theme:
-  name: mkdocs
+  name: material
   highlightjs: true
-  user_color_mode_toggle: true
   hljs_languages:
     - python
     - pycon
+
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to dark mode
+
+    - media: "(prefers-color-scheme: light)"
+      schema: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to system preference
+
