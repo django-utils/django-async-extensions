@@ -1,10 +1,12 @@
-from django.core.exceptions import ImproperlyConfigured
+from asgiref.sync import sync_to_async
+from django.core.exceptions import ImproperlyConfigured, SynchronousOnlyOperation
 from django.forms import Form
 from django.forms import models as model_forms
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 
+from django_async_extensions.aforms.models import AsyncModelForm
 from django_async_extensions.aviews.generic.base import AsyncView, AsyncContextMixin
 from django_async_extensions.aviews.generic.detail import (
     AsyncSingleObjectMixin,
@@ -79,6 +81,7 @@ class AsyncFormMixin(AsyncContextMixin):
 class AsyncModelFormMixin(AsyncFormMixin, AsyncSingleObjectMixin):
     """Provide a way to show and handle a ModelForm in a request."""
 
+    base_form_class = AsyncModelForm
     fields = None
 
     async def get_form_class(self):
@@ -109,7 +112,14 @@ class AsyncModelFormMixin(AsyncFormMixin, AsyncSingleObjectMixin):
                     "the 'fields' attribute is prohibited." % self.__class__.__name__
                 )
 
-            return model_forms.modelform_factory(model, fields=self.fields)
+            try:
+                return model_forms.modelform_factory(
+                    model, fields=self.fields, form=self.base_form_class
+                )
+            except SynchronousOnlyOperation:
+                return await sync_to_async(model_forms.modelform_factory)(
+                    model, fields=self.fields, form=self.base_form_class
+                )
 
     def get_form_kwargs(self):
         """Return the keyword arguments for instantiating the form."""
