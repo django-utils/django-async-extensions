@@ -26,3 +26,10 @@ A mixin that provides basic HTTP GET and POST workflow.
 
 `AsyncProcessFormView` works similar to django's [ProcessFormView](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-editing/#processformview),
 but it inherits from [AsyncView](base.md#asyncview) and all the http methods are async.
+
+
+## AsyncDeletionMixin
+Enables handling of the DELETE HTTP action.
+
+works similar to django's [DeletionMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-editing/#deletionmixin)
+but `delete()` and `post()` methods are async.
