@@ -14,7 +14,17 @@ class MyDetailView(AsyncDetailView):
 1. `get_object()` method is async.
 2. `get_queryset()` method is async.
 3. `get()` method is async.
-4. `AsyncDetailView` inherits from [AsyncView](base.md#asyncview) so anything mentioned there also applies here.
+4. the inheritance tree is different so the ancestors behaviour also applies here.
+
+*Ancestors (MRO)*:
+
+1. [django.views.generic.detail.SingleObjectTemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-single-object/#singleobjecttemplateresponsemixin)
+2. [django.views.generic.base.TemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.TemplateResponseMixin)
+3. [django_async_extensions.aviews.generic.detail.AsyncBaseDetailView](detail.md#asyncbasedetailview)
+4. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](detail.md#asyncsingleobjectmixin)
+5. [django_async_extensions.aviews.generic.base.AsyncContextMixin](base.md#asynccontextmixin)
+6. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+7. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
 
 
 ## Base classes
