@@ -42,4 +42,11 @@ with these differences:
 
 #### AsyncBaseDetailView
 
-like [BaseDetailView](https://docs.djangoproject.com/en/5.1/ref/class-based-views/generic-display/#django.views.generic.detail.BaseDetailView) but `get()` is async.
+like [BaseDetailView](https://docs.djangoproject.com/en/5.1/ref/class-based-views/generic-display/#django.views.generic.detail.BaseDetailView) but `get()` is async and the ancestors are different.
+
+*Ancestors (MRO)*:
+
+1. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](detail.md#asyncsingleobjectmixin)
+2. [django_async_extensions.aviews.generic.base.AsyncContextMixin](base.md#asynccontextmixin)
+3. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+4. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
