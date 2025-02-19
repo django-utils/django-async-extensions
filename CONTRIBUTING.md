@@ -49,3 +49,9 @@ contribution steps:
     first push your changes to your forked repo (using `git push origin main` or the like)
     then go to the repo and click on the button saying `Contribute`
     then open a pull request, we'll check the code and either accept or add notes to it.
+
+
+**Extra tips**:
+1. if you need to run a django shell to use some stuff,
+    run `export DJANGO_SETTINGS_MODULE=tests.settings`
+    then run `django-admin shell`
