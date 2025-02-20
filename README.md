@@ -27,7 +27,7 @@ more to come...
 
 ## Where are the docs?
 
-you can find our [documentations here]()
+you can find our [documentations here](https://django-async-extensions.readthedocs.io/en/latest/)
 
 ## How to install this?
 
