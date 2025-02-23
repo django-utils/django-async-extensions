@@ -305,12 +305,16 @@ class TestAsyncView:
         assert response.status_code == 405
 
 
+@pytest.fixture(autouse=True)
+def urlconf_setting_set(settings):
+    old_urlconf = settings.ROOT_URLCONF
+    settings.ROOT_URLCONF = "test_generic_views.urls"
+    yield settings
+    settings.ROOT_URLCONF = old_urlconf
+
+
 class TestAsyncTemplateView:
     rf = RequestFactory()
-
-    @pytest.fixture(autouse=True)
-    def urlconf_for_tests(self, settings):
-        settings.ROOT_URLCONF = "test_generic_views.urls"
 
     def _assert_about(self, response):
         response.render()
@@ -454,10 +458,6 @@ class TestAsyncTemplateView:
 
 class TestAsyncRedirectView:
     rf = RequestFactory()
-
-    @pytest.fixture(autouse=True)
-    def urlconf_for_tests(self, settings):
-        settings.ROOT_URLCONF = "test_generic_views.urls"
 
     async def test_no_url(self):
         "Without any configuration, returns HTTP 410 GONE"

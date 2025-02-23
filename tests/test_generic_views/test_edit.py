@@ -1,7 +1,6 @@
 import re
 
 from django import forms
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.test import Client, AsyncClient
 from django.test.client import RequestFactory
@@ -76,15 +75,19 @@ class TestFormMixin:
         assert isinstance(context_data["form"], forms.Form)
 
 
+@pytest.fixture(autouse=True)
+def url_setting_set(settings):
+    old_root_urlconf = settings.ROOT_URLCONF
+    settings.ROOT_URLCONF = "test_generic_views.urls"
+    yield settings
+    settings.ROOT_URLCONF = old_root_urlconf
+
+
 @pytest.mark.django_db
 class TestBasicForm:
-    @pytest.fixture(autouse=True)
-    def urlconf_for_tests(self):
-        settings.ROOT_URLCONF = "test_generic_views.urls"
-
-    # def test_post_data(self):
-    #     res = client.post("/contact/", {"name": "Me", "message": "Hello"})
-    #     assertRedirects(res, "/list/authors/")
+    def test_post_data(self):
+        res = client.post("/contact/", {"name": "Me", "message": "Hello"})
+        assertRedirects(res, "/list/authors/")
 
     async def test_late_form_validation(self):
         """
@@ -109,10 +112,6 @@ class TestModelFormMixin:
 
 @pytest.mark.django_db
 class TestCreateView:
-    @pytest.fixture(autouse=True)
-    def urlconf_for_tests(self):
-        settings.ROOT_URLCONF = "test_generic_views.urls"
-
     def test_create(self):
         res = client.get("/edit/authors/create/")
         assert res.status_code == 200
@@ -256,10 +255,6 @@ class TestCreateView:
 @pytest.mark.django_db
 class TestUpdateView:
     @pytest.fixture(autouse=True)
-    def urlconf_for_tests(self):
-        settings.ROOT_URLCONF = "test_generic_views.urls"
-
-    @pytest.fixture(autouse=True)
     def setup(cls):
         cls.author = Author.objects.create(
             pk=1,  # Required for OneAuthorUpdate.
@@ -392,10 +387,6 @@ class TestUpdateView:
 
 @pytest.mark.django_db
 class TestDeleteView:
-    @pytest.fixture(autouse=True)
-    def urlconf_for_tests(self):
-        settings.ROOT_URLCONF = "test_generic_views.urls"
-
     @pytest.fixture(autouse=True)
     def setup(cls):
         cls.author = Author.objects.create(

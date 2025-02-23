@@ -4,7 +4,6 @@ import pytest
 from django.db import connection
 from pytest_django.asserts import assertNumQueries
 
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.test import Client
 from django.test.utils import TZ_SUPPORT
@@ -50,12 +49,16 @@ class TestDataMixin:
         )
 
 
+@pytest.fixture(autouse=True)
+def url_setting_set(settings):
+    old_root_urlconf = settings.ROOT_URLCONF
+    settings.ROOT_URLCONF = "test_generic_views.urls"
+    yield settings
+    settings.ROOT_URLCONF = old_root_urlconf
+
+
 @pytest.mark.django_db
 class TestArchiveIndexView(TestDataMixin):
-    @pytest.fixture(autouse=True)
-    def url_setting_set(self):
-        settings.ROOT_URLCONF = "test_generic_views.urls"
-
     def test_archive_view(self):
         res = client.get("/dates/books/")
         assert res.status_code == 200
@@ -216,10 +219,6 @@ class TestArchiveIndexView(TestDataMixin):
 
 @pytest.mark.django_db
 class TestYearArchiveView(TestDataMixin):
-    @pytest.fixture(autouse=True)
-    def url_setting_set(self):
-        settings.ROOT_URLCONF = "test_generic_views.urls"
-
     def test_year_view(self):
         res = client.get("/dates/books/2008/")
         assert res.status_code == 200
@@ -389,10 +388,6 @@ class TestYearArchiveView(TestDataMixin):
 
 @pytest.mark.django_db
 class TestMonthArchiveView(TestDataMixin):
-    @pytest.fixture(autouse=True)
-    def url_setting_set(self):
-        settings.ROOT_URLCONF = "test_generic_views.urls"
-
     def test_month_view(self):
         res = client.get("/dates/books/2008/oct/")
         assert res.status_code == 200
@@ -552,10 +547,6 @@ class TestMonthArchiveView(TestDataMixin):
 
 @pytest.mark.django_db
 class TestWeekArchiveView(TestDataMixin):
-    @pytest.fixture(autouse=True)
-    def url_setting_set(self):
-        settings.ROOT_URLCONF = "test_generic_views.urls"
-
     def test_week_view(self):
         res = client.get("/dates/books/2008/week/39/")
         assert res.status_code == 200
@@ -692,10 +683,6 @@ class TestWeekArchiveView(TestDataMixin):
 
 @pytest.mark.django_db
 class TestDayArchiveView(TestDataMixin):
-    @pytest.fixture(autouse=True)
-    def url_setting_set(self):
-        settings.ROOT_URLCONF = "test_generic_views.urls"
-
     def test_day_view(self):
         res = client.get("/dates/books/2008/oct/01/")
         assert res.status_code == 200
@@ -837,10 +824,6 @@ class TestDayArchiveView(TestDataMixin):
 
 @pytest.mark.django_db
 class TestDateDetailView(TestDataMixin):
-    @pytest.fixture(autouse=True)
-    def url_setting_set(self):
-        settings.ROOT_URLCONF = "test_generic_views.urls"
-
     def test_date_detail_by_pk(self):
         res = client.get("/dates/books/2008/oct/01/%s/" % self.book1.pk)
         assert res.status_code == 200

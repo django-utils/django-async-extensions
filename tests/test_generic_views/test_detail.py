@@ -2,7 +2,6 @@ import datetime
 
 import pytest
 
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.test import Client
 from django.test.client import RequestFactory
@@ -16,12 +15,16 @@ from .models import Artist, Author, Book, Page
 client = Client()
 
 
+@pytest.fixture(autouse=True)
+def url_setting_set(settings):
+    old_root_urlconf = settings.ROOT_URLCONF
+    settings.ROOT_URLCONF = "test_generic_views.urls"
+    yield settings
+    settings.ROOT_URLCONF = old_root_urlconf
+
+
 @pytest.mark.django_db
 class TestAsyncDetailView:
-    @pytest.fixture(autouse=True)
-    def urlconf_for_tests(self):
-        settings.ROOT_URLCONF = "test_generic_views.urls"
-
     @pytest.fixture(autouse=True)
     def setup(self):
         self.artist1 = Artist.objects.create(name="Rene Magritte")
