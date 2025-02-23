@@ -37,7 +37,7 @@ ALWAYS_MIDDLEWARE = [
 # and isn't in an application in INSTALLED_APPS."
 CONTRIB_TESTS_TO_APPS = {
     "deprecation": ["django.contrib.flatpages", "django.contrib.redirects"],
-    "flatpages_tests": ["django.contrib.flatpages"],
+    "test_flatpages": ["django_async_extensions.acontrib.flatpages"],
     "redirects_tests": ["django.contrib.redirects"],
 }
 
