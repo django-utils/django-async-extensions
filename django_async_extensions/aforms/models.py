@@ -10,6 +10,18 @@ class AsyncModelForm(ModelForm):
     async def from_async(cls, *args, **kwargs):
         return await sync_to_async(cls)(*args, **kwargs)
 
+    @property
+    async def aerrors(self):
+        if self._errors is None:
+            await self.afull_clean()
+        return self._errors
+
+    async def ais_valid(self):
+        return self.is_bound and not await self.aerrors
+
+    async def afull_clean(self):
+        return await sync_to_async(self.full_clean)()
+
     async def _asave_m2m(self):
         """
         Save the many-to-many fields and generic relations for this form.
