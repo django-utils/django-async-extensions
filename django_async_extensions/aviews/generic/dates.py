@@ -14,12 +14,16 @@ from django.views.generic.dates import (
     DayMixin,
     DateMixin,
 )
-from django.views.generic.detail import SingleObjectTemplateResponseMixin
-from django.views.generic.list import MultipleObjectTemplateResponseMixin
 
 from django_async_extensions.aviews.generic.base import AsyncView
-from django_async_extensions.aviews.generic.detail import AsyncBaseDetailView
-from django_async_extensions.aviews.generic.list import AsyncMultipleObjectMixin
+from django_async_extensions.aviews.generic.detail import (
+    AsyncBaseDetailView,
+    AsyncSingleObjectTemplateResponseMixin,
+)
+from django_async_extensions.aviews.generic.list import (
+    AsyncMultipleObjectMixin,
+    AsyncMultipleObjectTemplateResponseMixin,
+)
 
 
 class AsyncYearMixin(YearMixin):
@@ -84,7 +88,7 @@ class AsyncBaseDateListView(AsyncMultipleObjectMixin, AsyncDateMixin, AsyncView)
         context = await self.get_context_data(
             object_list=self.object_list, date_list=self.date_list, **extra_context
         )
-        return self.render_to_response(context)
+        return await self.render_to_response(context)
 
     async def get_dated_items(self):
         raise NotImplementedError(
@@ -189,7 +193,7 @@ class AsyncBaseArchiveIndexView(AsyncBaseDateListView):
 
 
 class AsyncArchiveIndexView(
-    MultipleObjectTemplateResponseMixin, AsyncBaseArchiveIndexView
+    AsyncMultipleObjectTemplateResponseMixin, AsyncBaseArchiveIndexView
 ):
     """Top-level archive of date-based items."""
 
@@ -243,7 +247,7 @@ class AsyncBaseYearArchiveView(AsyncYearMixin, AsyncBaseDateListView):
 
 
 class AsyncYearArchiveView(
-    MultipleObjectTemplateResponseMixin, AsyncBaseYearArchiveView
+    AsyncMultipleObjectTemplateResponseMixin, AsyncBaseYearArchiveView
 ):
     """List of objects published in a given year."""
 
@@ -287,7 +291,7 @@ class AsyncBaseMonthArchiveView(AsyncYearMixin, AsyncMonthMixin, AsyncBaseDateLi
 
 
 class AsyncMonthArchiveView(
-    MultipleObjectTemplateResponseMixin, AsyncBaseMonthArchiveView
+    AsyncMultipleObjectTemplateResponseMixin, AsyncBaseMonthArchiveView
 ):
     """List of objects published in a given month."""
 
@@ -347,7 +351,7 @@ class AsyncBaseWeekArchiveView(AsyncYearMixin, AsyncWeekMixin, AsyncBaseDateList
 
 
 class AsyncWeekArchiveView(
-    MultipleObjectTemplateResponseMixin, AsyncBaseWeekArchiveView
+    AsyncMultipleObjectTemplateResponseMixin, AsyncBaseWeekArchiveView
 ):
     """List of objects published in a given week."""
 
@@ -397,7 +401,9 @@ class AsyncBaseDayArchiveView(
         )
 
 
-class AsyncDayArchiveView(MultipleObjectTemplateResponseMixin, AsyncBaseDayArchiveView):
+class AsyncDayArchiveView(
+    AsyncMultipleObjectTemplateResponseMixin, AsyncBaseDayArchiveView
+):
     """List of objects published on a given day."""
 
     template_name_suffix = "_archive_day"
@@ -412,7 +418,7 @@ class AsyncBaseTodayArchiveView(AsyncBaseDayArchiveView):
 
 
 class AsyncTodayArchiveView(
-    MultipleObjectTemplateResponseMixin, AsyncBaseTodayArchiveView
+    AsyncMultipleObjectTemplateResponseMixin, AsyncBaseTodayArchiveView
 ):
     """List of objects published today."""
 
@@ -465,7 +471,9 @@ class AsyncBaseDateDetailView(
         return await super().get_object(queryset=qs)
 
 
-class AsyncDateDetailView(SingleObjectTemplateResponseMixin, AsyncBaseDateDetailView):
+class AsyncDateDetailView(
+    AsyncSingleObjectTemplateResponseMixin, AsyncBaseDateDetailView
+):
     """
     Detail view of a single object on a single date; this differs from the
     standard DetailView by accepting a year/month/day in the URL.

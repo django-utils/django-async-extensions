@@ -3,14 +3,17 @@ from django.core.exceptions import ImproperlyConfigured, SynchronousOnlyOperatio
 from django.forms import Form
 from django.forms import models as model_forms
 from django.http import HttpResponseRedirect
-from django.views.generic.base import TemplateResponseMixin
-from django.views.generic.detail import SingleObjectTemplateResponseMixin
 
 from django_async_extensions.aforms.models import AsyncModelForm
-from django_async_extensions.aviews.generic.base import AsyncView, AsyncContextMixin
+from django_async_extensions.aviews.generic.base import (
+    AsyncView,
+    AsyncContextMixin,
+    AsyncTemplateResponseMixin,
+)
 from django_async_extensions.aviews.generic.detail import (
     AsyncSingleObjectMixin,
     AsyncBaseDetailView,
+    AsyncSingleObjectTemplateResponseMixin,
 )
 
 
@@ -69,7 +72,7 @@ class AsyncFormMixin(AsyncContextMixin):
 
     async def form_invalid(self, form):
         """If the form is invalid, render the invalid form."""
-        return self.render_to_response(await self.get_context_data(form=form))
+        return await self.render_to_response(await self.get_context_data(form=form))
 
     async def get_context_data(self, **kwargs):
         """Insert the form into the context dict."""
@@ -153,7 +156,7 @@ class AsyncProcessFormView(AsyncView):
 
     async def get(self, request, *args, **kwargs):
         """Handle GET requests: instantiate a blank version of the form."""
-        return self.render_to_response(await self.get_context_data())
+        return await self.render_to_response(await self.get_context_data())
 
     async def post(self, request, *args, **kwargs):
         """
@@ -176,7 +179,7 @@ class AsyncBaseFormView(AsyncFormMixin, AsyncProcessFormView):
     """A base view for displaying a form."""
 
 
-class AsyncFormView(TemplateResponseMixin, AsyncBaseFormView):
+class AsyncFormView(AsyncTemplateResponseMixin, AsyncBaseFormView):
     """A view for displaying a form and rendering a template response."""
 
 
@@ -196,7 +199,7 @@ class AsyncBaseCreateView(AsyncModelFormMixin, AsyncProcessFormView):
         return await super().post(request, *args, **kwargs)
 
 
-class AsyncCreateView(SingleObjectTemplateResponseMixin, AsyncBaseCreateView):
+class AsyncCreateView(AsyncSingleObjectTemplateResponseMixin, AsyncBaseCreateView):
     """
     View for creating a new object, with a response rendered by a template.
     """
@@ -220,7 +223,7 @@ class AsyncBaseUpdateView(AsyncModelFormMixin, AsyncProcessFormView):
         return await super().post(request, *args, **kwargs)
 
 
-class AsyncUpdateView(SingleObjectTemplateResponseMixin, AsyncBaseUpdateView):
+class AsyncUpdateView(AsyncSingleObjectTemplateResponseMixin, AsyncBaseUpdateView):
     """View for updating an object, with a response rendered by a template."""
 
     template_name_suffix = "_form"
@@ -279,7 +282,7 @@ class AsyncBaseDeleteView(AsyncDeletionMixin, AsyncFormView, AsyncBaseDetailView
         return HttpResponseRedirect(success_url)
 
 
-class AsyncDeleteView(SingleObjectTemplateResponseMixin, AsyncBaseDeleteView):
+class AsyncDeleteView(AsyncSingleObjectTemplateResponseMixin, AsyncBaseDeleteView):
     """
     View for deleting an object retrieved with self.get_object(), with a
     response rendered by a template.

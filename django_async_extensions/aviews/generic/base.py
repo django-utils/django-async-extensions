@@ -1,6 +1,6 @@
 import logging
 
-from asgiref.sync import iscoroutinefunction, markcoroutinefunction
+from asgiref.sync import iscoroutinefunction, markcoroutinefunction, sync_to_async
 
 from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse, HttpResponseNotAllowed
@@ -124,14 +124,32 @@ class AsyncView(View):
         return response
 
 
-class AsyncTemplateView(TemplateResponseMixin, AsyncContextMixin, AsyncView):
+class AsyncTemplateResponseMixin(TemplateResponseMixin):
+    async def render_to_response(self, context, **response_kwargs):
+        """
+        Return a response, using the `response_class` for this view, with a
+        template rendered with the given context.
+
+        Pass response_kwargs to the constructor of the response class.
+        """
+        response_kwargs.setdefault("content_type", self.content_type)
+        return await sync_to_async(self.response_class)(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            using=self.template_engine,
+            **response_kwargs,
+        )
+
+
+class AsyncTemplateView(AsyncTemplateResponseMixin, AsyncContextMixin, AsyncView):
     """
     Render a template. Pass keyword arguments from the URLconf to the context.
     """
 
     async def get(self, request, *args, **kwargs):
         context = await self.get_context_data(**kwargs)
-        return self.render_to_response(context)
+        return await self.render_to_response(context)
 
 
 class AsyncRedirectView(AsyncView, RedirectView):
