@@ -310,7 +310,7 @@ class TestModelFormBase:
         assert f1.is_valid()
 
         f2 = FormForTestingIsValid(data2)
-        assert await sync_to_async(f2.is_valid)()
+        assert await f2.ais_valid()
 
         obj = await f2.asave()
         assert obj.character == char
@@ -965,25 +965,25 @@ class TestUnique:
 
     async def test_simple_unique(self):
         form = ProductForm({"slug": "teddy-bear-blue"})
-        assert await sync_to_async(form.is_valid)()
+        assert await form.ais_valid()
         obj = await form.asave()
         form = ProductForm({"slug": "teddy-bear-blue"})
-        await sync_to_async(form.full_clean)()
-        assert len(form.errors) == 1
-        assert form.errors["slug"] == ["Product with this Slug already exists."]
+        errors = await form.aerrors
+        assert len(errors) == 1
+        assert errors["slug"] == ["Product with this Slug already exists."]
         form = ProductForm({"slug": "teddy-bear-blue"}, instance=obj)
-        assert await sync_to_async(form.is_valid)()
+        assert await form.ais_valid()
 
     async def test_unique_together(self):
         """ModelForm test of unique_together constraint"""
         form = PriceForm({"price": "6.00", "quantity": "1"})
-        assert await sync_to_async(form.is_valid)()
+        assert await form.ais_valid()
         await form.asave()
         form = PriceForm({"price": "6.00", "quantity": "1"})
-        assert await sync_to_async(form.is_valid)() is False
-        await sync_to_async(form.full_clean)()
-        assert len(form.errors) == 1
-        assert form.errors["__all__"] == [
+        assert await form.ais_valid() is False
+        errors = await form.aerrors
+        assert len(errors) == 1
+        assert errors["__all__"] == [
             "Price with this Price and Quantity already exists."
         ]
 
@@ -1044,15 +1044,13 @@ class TestUnique:
     async def test_unique_null(self):
         title = "I May Be Wrong But I Doubt It"
         form = BookForm({"title": title, "author": self.writer.pk})
-        assert await sync_to_async(form.is_valid)()
+        assert await form.ais_valid()
         await form.asave()
         form = BookForm({"title": title, "author": self.writer.pk})
-        assert await sync_to_async(form.is_valid)() is False
-        await sync_to_async(form.full_clean)()
-        assert len(form.errors) == 1
-        assert form.errors["__all__"] == [
-            "Book with this Title and Author already exists."
-        ]
+        assert await form.ais_valid() is False
+        errors = await form.aerrors
+        assert len(errors) == 1
+        assert errors["__all__"] == ["Book with this Title and Author already exists."]
         form = BookForm({"title": title})
         assert form.is_valid()
         await form.asave()
@@ -1079,12 +1077,12 @@ class TestUnique:
     async def test_inherited_unique_together(self):
         title = "Boss"
         form = BookForm({"title": title, "author": self.writer.pk})
-        assert await sync_to_async(form.is_valid)()
+        assert await form.ais_valid()
         await form.asave()
         form = DerivedBookForm(
             {"title": title, "author": self.writer.pk, "isbn": "12345"}
         )
-        assert await sync_to_async(form.is_valid)() is False
+        assert await form.ais_valid() is False
         assert len(form.errors) == 1
         assert form.errors["__all__"] == [
             "Book with this Title and Author already exists."
@@ -1134,10 +1132,10 @@ class TestUnique:
     async def test_explicitpk_unique(self):
         """Ensure keys and blank character strings are tested for uniqueness."""
         form = ExplicitPKForm({"key": "key1", "desc": ""})
-        assert await sync_to_async(form.is_valid)()
+        assert await form.ais_valid()
         await form.asave()
         form = ExplicitPKForm({"key": "key1", "desc": ""})
-        assert await sync_to_async(form.is_valid)() is False
+        assert await form.ais_valid() is False
         if connection.features.interprets_empty_strings_as_nulls:
             assert len(form.errors) == 1
             assert form.errors["key"] == ["Explicit pk with this Key already exists."]
@@ -1397,7 +1395,7 @@ class TestModelFormBasic:
             },
         )
         assertHTMLEqual(
-            await sync_to_async(f.as_ul)(),
+            await f.aas_ul(),
             """
             <li>Headline:
             <input type="text" name="headline" value="Your headline here" maxlength="50"
@@ -1446,9 +1444,9 @@ class TestModelFormBasic:
         )
         art_id_1 = art.id
 
-        f = await sync_to_async(ArticleForm)(auto_id=False, instance=art)
+        f = await ArticleForm.from_async(auto_id=False, instance=art)
         assertHTMLEqual(
-            await sync_to_async(f.as_ul)(),
+            await f.aas_ul(),
             """
             <li>Headline:
             <input type="text" name="headline" value="Test article" maxlength="50"
@@ -1481,7 +1479,7 @@ class TestModelFormBasic:
             % (self.w_woodward.pk, self.w_royko.pk, self.c1.pk, self.c2.pk, self.c3.pk),
         )
 
-        f = await sync_to_async(ArticleForm)(
+        f = await ArticleForm.from_async(
             {
                 "headline": "Test headline",
                 "slug": "test-headline",
@@ -1491,8 +1489,7 @@ class TestModelFormBasic:
             },
             instance=art,
         )
-        await sync_to_async(f.full_clean)()
-        assert f.errors == {}
+        assert await f.aerrors == {}
         assert f.is_valid()
         test_art = await f.asave()
         assert test_art.id == art_id_1
@@ -1521,7 +1518,7 @@ class TestModelFormBasic:
         )
         form = ModelForm()
         assertHTMLEqual(
-            await sync_to_async(form.as_ul)(),
+            await form.aas_ul(),
             """<li><label for="id_headline">Headline:</label>
 <input id="id_headline" type="text" name="headline" maxlength="50" required></li>
 <li><label for="id_categories">Categories:</label>
@@ -1640,9 +1637,9 @@ class TestModelFormBasic:
         )
         await new_art.categories.aadd(await Category.objects.aget(name="Entertainment"))
         assert [art async for art in new_art.categories.all()] == [self.c1]
-        f = await sync_to_async(ArticleForm)(auto_id=False, instance=new_art)
+        f = await ArticleForm.from_async(auto_id=False, instance=new_art)
         assertHTMLEqual(
-            await sync_to_async(f.as_ul)(),
+            await f.aas_ul(),
             """
             <li>Headline:
             <input type="text" name="headline" value="New headline" maxlength="50"
@@ -1760,7 +1757,7 @@ class TestModelFormBasic:
         # Now, submit form data with no categories. This deletes the existing
         # categories.
         form_data["categories"] = []
-        f = await sync_to_async(ArticleForm)(form_data, instance=new_art)
+        f = await ArticleForm.from_async(form_data, instance=new_art)
         new_art = await f.asave()
         assert new_art.id == art_id_1
         new_art = await Article.objects.aget(id=art_id_1)
@@ -1826,7 +1823,7 @@ class TestModelFormBasic:
         await self.create_basic_data()
         f = ArticleForm(auto_id=False)
         assertHTMLEqual(
-            await sync_to_async(f.as_ul)(),
+            await f.aas_ul(),
             '<li>Headline: <input type="text" name="headline" maxlength="50" required>'
             "</li>"
             '<li>Slug: <input type="text" name="slug" maxlength="50" required></li>'
@@ -1855,7 +1852,7 @@ class TestModelFormBasic:
         c4 = await Category.objects.acreate(name="Fourth", url="4th")
         w_bernstein = await Writer.objects.acreate(name="Carl Bernstein")
         assertHTMLEqual(
-            await sync_to_async(f.as_ul)(),
+            await f.aas_ul(),
             '<li>Headline: <input type="text" name="headline" maxlength="50" required>'
             "</li>"
             '<li>Slug: <input type="text" name="slug" maxlength="50" required></li>'
@@ -1984,7 +1981,7 @@ class TestModelFormBasic:
             "article": "lorem ipsum",
         }
         form = MyForm(data)
-        assert await sync_to_async(form.is_valid)()
+        assert await form.ais_valid()
         article = await form.asave()
         assert article.writer == w
 
@@ -2264,7 +2261,7 @@ class TestModelOneToOneField:
 
         form = WriterProfileForm()
         assertHTMLEqual(
-            await sync_to_async(form.as_p)(),
+            await form.aas_p(),
             """
             <p><label for="id_writer">Writer:</label>
             <select name="writer" id="id_writer" required>
@@ -2291,7 +2288,7 @@ class TestModelOneToOneField:
 
         form = WriterProfileForm(instance=instance)
         assertHTMLEqual(
-            await sync_to_async(form.as_p)(),
+            await form.aas_p(),
             """
             <p><label for="id_writer">Writer:</label>
             <select name="writer" id="id_writer" required>
