@@ -45,7 +45,7 @@ class AuthorCustomDetail(generic.AsyncDetailView):
         # Ensures get_context_object_name() doesn't reference self.object.
         author = await self.get_object()
         context = {"custom_" + self.get_context_object_name(author): author}
-        return self.render_to_response(context)
+        return await self.render_to_response(context)
 
 
 class PageDetail(generic.AsyncDetailView):

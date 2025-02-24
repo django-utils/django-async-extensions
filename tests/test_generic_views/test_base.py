@@ -61,7 +61,7 @@ class DecoratedDispatchView(SimpleView):
 
 class AboutTemplateView(AsyncTemplateView):
     async def get(self, request):
-        return self.render_to_response({})
+        return await self.render_to_response({})
 
     def get_template_names(self):
         return ["test_generic_views/about.html"]
@@ -71,7 +71,7 @@ class AboutTemplateAttributeView(AsyncTemplateView):
     template_name = "test_generic_views/about.html"
 
     async def get(self, request):
-        return self.render_to_response(context={})
+        return await self.render_to_response(context={})
 
 
 class InstanceView(AsyncView):
