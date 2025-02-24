@@ -4,8 +4,10 @@ from asgiref.sync import sync_to_async
 
 from django.forms.models import ModelForm
 
+from django_async_extensions.aforms.utils import AsyncRenderableFormMixin
 
-class AsyncModelForm(ModelForm):
+
+class AsyncModelForm(AsyncRenderableFormMixin, ModelForm):
     @classmethod
     async def from_async(cls, *args, **kwargs):
         return await sync_to_async(cls)(*args, **kwargs)
