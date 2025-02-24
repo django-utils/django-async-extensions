@@ -6,6 +6,10 @@ from django.forms.models import ModelForm
 
 
 class AsyncModelForm(ModelForm):
+    @classmethod
+    async def from_async(cls, *args, **kwargs):
+        return await sync_to_async(cls)(*args, **kwargs)
+
     async def _asave_m2m(self):
         """
         Save the many-to-many fields and generic relations for this form.
