@@ -26,13 +26,14 @@ but the inheritance tree has changed to work asynchronously.
 
 *Ancestors (MRO)*:
 
-1. [django.views.generic.base.TemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.TemplateResponseMixin)
-2. [django_async_extensions.aviews.generic.edit.AsyncBaseFormView](edit.md#asyncbaseformview)
-3. [django_async_extensions.aviews.generic.edit.AsyncFormMixin](mixins-editing.md#asyncformmixin)
-4. [django_async_extensions.aviews.generic.base.AsyncContextMixin](base.md#asynccontextmixin)
-5. [django_async_extensions.aviews.generic.edit.AsyncProcessFormMixin](mixins-editing.md#asyncprocessformview)
-6. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
-7. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
+1. [django-async-extensions.aviews.generic.base.AsyncTemplateResponseMixin](mixins-simple.md#asynctemplateresponsemixin)
+2. [django.views.generic.base.TemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.TemplateResponseMixin)
+3. [django_async_extensions.aviews.generic.edit.AsyncBaseFormView](edit.md#asyncbaseformview)
+4. [django_async_extensions.aviews.generic.edit.AsyncFormMixin](mixins-editing.md#asyncformmixin)
+5. [django_async_extensions.aviews.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
+6. [django_async_extensions.aviews.generic.edit.AsyncProcessFormMixin](mixins-editing.md#asyncprocessformview)
+7. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+8. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
 
 
 *Example myapp/forms.py*
@@ -86,16 +87,17 @@ also the inheritance tree is different to support async operation.
 
 *Ancestors (MRO)*:
 
-1. [django.views.generic.detail.SingleObjectTemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-single-object/#singleobjecttemplateresponsemixin)
-2. [django.views.generic.base.TemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.TemplateResponseMixin)
-3. [django_async_extensions.aviews.generic.edit.AsyncBaseCreateView](edit.md#asyncbasecreateview)
-4. [django_async_extensions.aviews.generic.edit.AsyncModelFormMixin](mixins-editing.md#asyncmodelformmixin)
-5. [django_async_extensions.aviews.generic.edit.AsyncFormMixin](mixins-editing.md#asyncformmixin)
-6. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](detail.md#asyncsingleobjectmixin)
-7. [django_async_extensions.aviews.generic.base.AsyncContextMixin](base.md#asynccontextmixin)
-8. [django_async_extensions.aviews.generic.edit.AsyncProcessFormMixin](mixins-editing.md#asyncprocessformview)
-9. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
-10. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
+1. [django-async-extensions.aviews.generic.detail.AsyncSingleObjectTemplateResponseMixin](mixins-single-object.md#asyncsingleobjecttemplateresponsemixin)
+2. [django-async-extensions.aviews.generic.base.AsyncTemplateResponseMixin](mixins-simple.md#asynctemplateresponsemixin)
+3. [django.views.generic.base.TemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.TemplateResponseMixin)
+4. [django_async_extensions.aviews.generic.edit.AsyncBaseCreateView](edit.md#asyncbasecreateview)
+5. [django_async_extensions.aviews.generic.edit.AsyncModelFormMixin](mixins-editing.md#asyncmodelformmixin)
+6. [django_async_extensions.aviews.generic.edit.AsyncFormMixin](mixins-editing.md#asyncformmixin)
+7. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](mixins-single-object.md#asyncsingleobjectmixin)
+8. [django_async_extensions.aviews.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
+9. [django_async_extensions.aviews.generic.edit.AsyncProcessFormMixin](mixins-editing.md#asyncprocessformview)
+10. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+11. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
 
 
 *Example myapp/views.py*
@@ -142,16 +144,17 @@ also the inheritance tree is different to support async operation.
 
 *Ancestors (MRO)*:
 
-1. [django.views.generic.detail.SingleObjectTemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-single-object/#singleobjecttemplateresponsemixin)
+1. [django-async-extensions.aviews.generic.detail.AsyncSingleObjectTemplateResponseMixin](mixins-single-object.md#asyncsingleobjecttemplateresponsemixin)
+2. [django-async-extensions.aviews.generic.base.AsyncTemplateResponseMixin](mixins-simple.md#asynctemplateresponsemixin)
 2. [django.views.generic.base.TemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.TemplateResponseMixin)
 3. [django_async_extensions.aviews.generic.edit.AsyncBaseUpdateView](edit.md#asyncbasecreateview)
 4. [django_async_extensions.aviews.generic.edit.AsyncModelFormMixin](mixins-editing.md#asyncmodelformmixin)
 5. [django_async_extensions.aviews.generic.edit.AsyncFormMixin](mixins-editing.md#asyncformmixin)
-6. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](detail.md#asyncsingleobjectmixin)
-7. [django_async_extensions.aviews.generic.base.AsyncContextMixin](base.md#asynccontextmixin)
-8. [django_async_extensions.aviews.generic.edit.AsyncProcessFormMixin](mixins-editing.md#asyncprocessformview)
-9. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
-10. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
+7. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](mixins-single-object.md#asyncsingleobjectmixin)
+8. [django_async_extensions.aviews.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
+9. [django_async_extensions.aviews.generic.edit.AsyncProcessFormMixin](mixins-editing.md#asyncprocessformview)
+10. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+11. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
 
 
 *Example myapp/views.py*
@@ -191,19 +194,20 @@ but it's been modified to work as an async view.
 
 *Ancestors (MRO)*:
 
-1. [django.views.generic.detail.SingleObjectTemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-single-object/#singleobjecttemplateresponsemixin)
-2. [django_async_extensions.aviews.generic.edit.AsyncBaseDeleteView]()
+1. [django-async-extensions.aviews.generic.detail.AsyncSingleObjectTemplateResponseMixin](mixins-single-object.md#asyncsingleobjecttemplateresponsemixin)
+2. [django_async_extensions.aviews.generic.edit.AsyncBaseDeleteView](edit.md#asyncbasedeleteview)
 3. [django_async_extensions.aviews.generic.edit.AsyncDeletionMixin](mixins-editing.md#asyncdeletionmixin)
 4. [django_async_extensions.aviews.generic.edit.AsyncFormView](mixins-editing.md#asyncdeletionmixin)
-5. [django.views.generic.base.TemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.TemplateResponseMixin)
-6. [django_async_extensions.aviews.generic.edit.AsyncBaseFormView](edit.md#asyncbaseformview)
-7. [django_async_extensions.aviews.generic.edit.AsyncFormMixin](mixins-editing.md#asyncformmixin)
-8. [django_async_extensions.aviews.generic.detail.AsyncBaseDetailView](detail.md#asyncbasedetailview)
-9. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](detail.md#asyncsingleobjectmixin)
-10. [django_async_extensions.aviews.generic.base.AsyncContextMixin](base.md#asynccontextmixin)
-11. [django_async_extensions.aviews.generic.edit.AsyncProcessFormMixin](mixins-editing.md#asyncprocessformview)
-12. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
-13. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View) 
+5. [django-async-extensions.aviews.generic.base.AsyncTemplateResponseMixin](mixins-simple.md#asynctemplateresponsemixin)
+6. [django.views.generic.base.TemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.TemplateResponseMixin)
+7. [django_async_extensions.aviews.generic.edit.AsyncBaseFormView](edit.md#asyncbaseformview)
+8. [django_async_extensions.aviews.generic.edit.AsyncFormMixin](mixins-editing.md#asyncformmixin)
+9. [django_async_extensions.aviews.generic.detail.AsyncBaseDetailView](detail.md#asyncbasedetailview)
+10. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](mixins-single-object.md#asyncsingleobjectmixin)
+11. [django_async_extensions.aviews.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
+12. [django_async_extensions.aviews.generic.edit.AsyncProcessFormMixin](mixins-editing.md#asyncprocessformview)
+13. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+14. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View) 
 
 
 ## Base Class
@@ -219,7 +223,7 @@ but the ancestors are different.
 
 1. [django_async_extensions.aviews.generic.edit.AsyncBaseFormView](edit.md#asyncbaseformview)
 2. [django_async_extensions.aviews.generic.edit.AsyncFormMixin](mixins-editing.md#asyncformmixin)
-3. [django_async_extensions.aviews.generic.base.AsyncContextMixin](base.md#asynccontextmixin)
+3. [django_async_extensions.aviews.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
 4. [django_async_extensions.aviews.generic.edit.AsyncProcessFormMixin](mixins-editing.md#asyncprocessformview)
 5. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
 6. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
@@ -234,8 +238,46 @@ similar to django's [BaseCreateView](https://docs.djangoproject.com/en/5.1/ref/c
 
 1. [django_async_extensions.aviews.generic.edit.AsyncModelFormMixin](mixins-editing.md#asyncmodelformmixin)
 2. [django_async_extensions.aviews.generic.edit.AsyncFormMixin](mixins-editing.md#asyncformmixin)
-3. [django_async_extensions.aviews.generic.base.AsyncContextMixin](base.md#asynccontextmixin)
-4. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](detail.md#asyncsingleobjectmixin)
+3. [django_async_extensions.aviews.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
+4. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](mixins-single-object.md#asyncsingleobjectmixin)
 5. [django_async_extensions.aviews.generic.edit.AsyncProcessFormMixin](mixins-editing.md#asyncprocessformview)
 6. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
 7. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
+
+
+### AsyncBaseUpdateView
+A base view for updating an object instance. It is not intended to be used directly, but rather as a parent class of the [django_async_extensions.aviews.generic.edit.AsyncUpdateView](edit.md#asyncupdateview).
+
+similar to django's [BaseUpdateView](https://docs.djangoproject.com/en/5.1/ref/class-based-views/generic-editing/#django.views.generic.edit.BaseUpdateView) but asyncified.
+
+*Ancestors (MRO)*:
+
+1. [django_async_extensions.aviews.generic.edit.AsyncModelFormMixin](mixins-editing.md#asyncmodelformmixin)
+2. [django_async_extensions.aviews.generic.edit.AsyncFormMixin](mixins-editing.md#asyncformmixin)
+3. [django_async_extensions.aviews.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
+4. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](mixins-single-object.md#asyncsingleobjectmixin)
+5. [django_async_extensions.aviews.generic.edit.AsyncProcessFormMixin](mixins-editing.md#asyncprocessformview)
+6. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+7. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
+
+
+### AsyncBaseDeleteView
+A base view for deleting an object instance. It is not intended to be used directly, but rather as a parent class of the [django_async_extensions.aviews.generic.edit.AsyncDeleteView](edit.md#asyncdeleteview).
+
+similar to django's [BaseDeleteView](https://docs.djangoproject.com/en/5.1/ref/class-based-views/generic-editing/#django.views.generic.edit.BaseDeleteView) but asyncified.
+
+*Ancestors (MRO)*:
+
+1. [django_async_extensions.aviews.generic.edit.AsyncDeletionMixin](mixins-editing.md#asyncdeletionmixin)
+2. [django_async_extensions.aviews.generic.edit.AsyncFormView](mixins-editing.md#asyncdeletionmixin)
+3. [django-async-extensions.aviews.generic.base.AsyncTemplateResponseMixin](mixins-simple.md#asynctemplateresponsemixin)
+4. [django.views.generic.base.TemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.TemplateResponseMixin)
+5. [django_async_extensions.aviews.generic.edit.AsyncBaseFormView](edit.md#asyncbaseformview)
+6. [django_async_extensions.aviews.generic.edit.AsyncFormMixin](mixins-editing.md#asyncformmixin)
+7. [django_async_extensions.aviews.generic.detail.AsyncBaseDetailView](detail.md#asyncbasedetailview)
+8. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](mixins-single-object.md#asyncsingleobjectmixin)
+9. [django_async_extensions.aviews.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
+10. [django_async_extensions.aviews.generic.edit.AsyncProcessFormMixin](mixins-editing.md#asyncprocessformview)
+11. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+12. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View) 
+

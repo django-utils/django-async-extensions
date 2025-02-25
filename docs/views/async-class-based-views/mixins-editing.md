@@ -18,7 +18,7 @@ A form mixin that works on ModelForms, rather than a standalone form.
 `AsyncModelFormMixin` similar to django's [ModelFormMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-editing/#modelformmixin)
 with a number of differences:
 
-1. `AsyncModelFormMixin` inherits from [AsyncFormMixin](mixins-editing.md#asyncformmixin) and [AsyncSingleObjectMixin](detail.md#asyncsingleobjectmixin) so anything mentioned on those classes also applies here.
+1. `AsyncModelFormMixin` inherits from [AsyncFormMixin](mixins-editing.md#asyncformmixin) and [AsyncSingleObjectMixin](mixins-single-object.md#asyncsingleobjectmixin) so anything mentioned on those classes also applies here.
 2. `get_form_class()` method is async.
 
 ## AsyncProcessFormView
