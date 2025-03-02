@@ -22,7 +22,7 @@ class TestSecurityMiddleware:
         settings.SECURE_HSTS_SECONDS = old_hsts_setting
 
     @pytest.fixture
-    def hsts_with_subdomains_fixture(self, request: bool, settings):
+    def hsts_with_subdomains_fixture(self, request, settings):
         old_hsts_subdomains = settings.SECURE_HSTS_INCLUDE_SUBDOMAINS
         settings.SECURE_HSTS_INCLUDE_SUBDOMAINS = request.param
 
@@ -31,7 +31,7 @@ class TestSecurityMiddleware:
         settings.SECURE_HSTS_INCLUDE_SUBDOMAINS = old_hsts_subdomains
 
     @pytest.fixture
-    def ssl_redirect_fixture(self, request: bool, settings):
+    def ssl_redirect_fixture(self, request, settings):
         old_ssl_redirect = settings.SECURE_SSL_REDIRECT
 
         settings.SECURE_SSL_REDIRECT = request.param
