@@ -1,6 +1,6 @@
 [project]
 name = "django-async-extensions"
-version = "0.0.3"
+version = "0.0.3.post1"
 description = "provide async capable stuff for django"
 authors = [
     {name = "amirreza",email = "amir.rsf1380@gmail.com"}
@@ -50,9 +50,9 @@ pytest-mock = "^3.14.0"
 psycopg = {extras = ["binary", "pool"], version = "^3.2.4"}
 
 [tool.poetry.urls]
-Homepage = "https://github.com/amirreza8002/django-async-extensions"
-Source = "https://github.com/amirreza8002/django-async-extensions"
-Issues = "https://github.com/amirreza8002/django-async-extensions/issues"
+Homepage = "https://github.com/django-utils/django-async-extensions"
+Source = "https://github.com/django-utils/django-async-extensions"
+Issues = "https://github.com/django-utils/django-async-extensions/issues"
 Documentation = "https://django-async-extensions.readthedocs.io/en/latest/"
 
 [tool.poetry.group.doc.dependencies]
