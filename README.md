@@ -22,6 +22,7 @@ these tools are provided for now:
 2. async generic class based views.
 3. async paginator
 4. async auth mixins 
+5. async base middleware
 
 more to come...
 

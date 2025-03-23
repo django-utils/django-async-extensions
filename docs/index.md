@@ -11,6 +11,7 @@ check out the [installation](installation.md) guide for how to get this package.
 * async generic class based views.
 * async auth mixins.
 * async paginator.
+* async base middleware
 * more to come...
 
 ## Rational
