@@ -57,6 +57,7 @@ Documentation = "https://django-async-extensions.readthedocs.io/en/latest/"
 
 [tool.poetry.group.doc.dependencies]
 mkdocs = "^1.6.1"
+mkdocs-material = "^9.6.9"
 
 
 [tool.poetry.group.ipython.dependencies]
