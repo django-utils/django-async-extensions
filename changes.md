@@ -1,3 +1,7 @@
+### Version 0.0.4
+
+* added base async middleware
+
 ### Version 0.0.3
 
 * adjusted the renderer of CBVs to be async friendly
