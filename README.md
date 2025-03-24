@@ -22,7 +22,8 @@ these tools are provided for now:
 2. async generic class based views.
 3. async paginator
 4. async auth mixins 
-5. async base middleware
+5. async model form
+6. async base middleware
 
 more to come...
 
@@ -50,7 +51,7 @@ this package is developed by the community for the community and is available fo
 1. does this package solve all the async problems django has?
 
 no, we provide some tools to help with some stuff,
-but some stuff need to be solved in django itself.
+but some things need to be solved in django itself.
 
 2. does this make async programming easier?
 
