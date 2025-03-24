@@ -3,7 +3,7 @@
 `AsyncDetailView` generic view is provided
 
 ```python
-from django_async_extensions.aviews.generic import AsyncDetailView
+from django_async_extensions.views.generic import AsyncDetailView
 
 class MyDetailView(AsyncDetailView):
     model = MyModel
@@ -18,13 +18,13 @@ class MyDetailView(AsyncDetailView):
 
 *Ancestors (MRO)*:
 
-1. [django-async-extensions.aviews.generic.detail.AsyncSingleObjectTemplateResponseMixin](mixins-single-object.md#asyncsingleobjecttemplateresponsemixin)
-2. [django-async-extensions.aviews.generic.base.AsyncTemplateResponseMixin](mixins-simple.md#asynctemplateresponsemixin)
+1. [django-async-extensions.views.generic.detail.AsyncSingleObjectTemplateResponseMixin](mixins-single-object.md#asyncsingleobjecttemplateresponsemixin)
+2. [django-async-extensions.views.generic.base.AsyncTemplateResponseMixin](mixins-simple.md#asynctemplateresponsemixin)
 3. [django.views.generic.base.TemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.TemplateResponseMixin)
-4. [django_async_extensions.aviews.generic.detail.AsyncBaseDetailView](detail.md#asyncbasedetailview)
-5. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](mixins-single-object.md#asyncsingleobjectmixin)
-6. [django_async_extensions.aviews.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
-7. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+4. [django_async_extensions.views.generic.detail.AsyncBaseDetailView](detail.md#asyncbasedetailview)
+5. [django_async_extensions.views.generic.detail.AsyncSingleObjectMixin](mixins-single-object.md#asyncsingleobjectmixin)
+6. [django_async_extensions.views.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
+7. [django_async_extensions.views.generic.base.AsyncView](base.md#asyncview)
 8. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
 
 
@@ -37,7 +37,7 @@ like [BaseDetailView](https://docs.djangoproject.com/en/5.1/ref/class-based-view
 
 *Ancestors (MRO)*:
 
-1. [django_async_extensions.aviews.generic.detail.AsyncSingleObjectMixin](mixins-single-object.md#asyncsingleobjectmixin)
-2. [django_async_extensions.aviews.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
-3. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+1. [django_async_extensions.views.generic.detail.AsyncSingleObjectMixin](mixins-single-object.md#asyncsingleobjectmixin)
+2. [django_async_extensions.views.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
+3. [django_async_extensions.views.generic.base.AsyncView](base.md#asyncview)
 4. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)

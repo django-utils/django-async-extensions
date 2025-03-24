@@ -1,16 +1,16 @@
 import re
 
+import pytest
+from pytest_django.asserts import assertRedirects, assertQuerySetEqual
+
 from django import forms
 from django.core.exceptions import ImproperlyConfigured
 from django.test import Client, AsyncClient
 from django.test.client import RequestFactory
-
-import pytest
 from django.urls import reverse
-from pytest_django.asserts import assertRedirects, assertQuerySetEqual
 
-from django_async_extensions.aviews.generic import AsyncView
-from django_async_extensions.aviews.generic.edit import (
+from django_async_extensions.views.generic import AsyncView
+from django_async_extensions.views.generic.edit import (
     AsyncFormMixin,
     AsyncModelFormMixin,
     AsyncCreateView,

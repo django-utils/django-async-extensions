@@ -4,7 +4,7 @@ from asgiref.sync import sync_to_async
 
 from django.forms.models import ModelForm
 
-from django_async_extensions.aforms.utils import AsyncRenderableFormMixin
+from django_async_extensions.forms.utils import AsyncRenderableFormMixin
 
 
 class AsyncModelForm(AsyncRenderableFormMixin, ModelForm):

@@ -5,7 +5,7 @@ import pytest
 from django.core.exceptions import ImproperlyConfigured
 from django.http.response import HttpResponse
 
-from django_async_extensions.amiddleware.base import AsyncMiddlewareMixin
+from django_async_extensions.middleware.base import AsyncMiddlewareMixin
 
 req = HttpResponse()
 resp = HttpResponse()

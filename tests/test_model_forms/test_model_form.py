@@ -9,8 +9,9 @@ import shutil
 from decimal import Decimal
 from unittest import mock
 
-import pytest
 from asgiref.sync import sync_to_async
+
+import pytest
 from pytest_django.asserts import assertNumQueries, assertHTMLEqual
 
 from django import forms
@@ -36,7 +37,7 @@ from django.test.utils import isolate_apps
 from django.utils.choices import BlankChoiceIterator
 from django.utils.version import PYPY
 
-from django_async_extensions.aforms.models import AsyncModelForm
+from django_async_extensions.forms.models import AsyncModelForm
 
 from .models import (
     Article,

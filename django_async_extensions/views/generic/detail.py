@@ -3,7 +3,7 @@ from django.db import models
 from django.http import Http404
 from django.utils.translation import gettext as _
 
-from django_async_extensions.aviews.generic.base import (
+from django_async_extensions.views.generic.base import (
     AsyncView,
     AsyncContextMixin,
     AsyncTemplateResponseMixin,

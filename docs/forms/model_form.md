@@ -20,7 +20,7 @@ class Author(models.Model):
 
 *Example myapp/forms.py*:
 ```python
-from django_async_extensions.aforms import AsyncModelForm
+from django_async_extensions.forms import AsyncModelForm
 from myapp.models import Author
 
 

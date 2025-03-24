@@ -3,7 +3,7 @@
 django has a set of mixins that help with limiting access and enforcing authentication and permissions,
 but these mixins do not work with async views.
 
-to help with that an async version of the mixins are included in the `acontrib.auth.mixins` module.
+to help with that an async version of the mixins are included in the `contrib.auth.mixins` module.
 
 **note**: these mixins only work with `AsyncView` or classes that inherit from it, or implement the same logic.
 
@@ -16,7 +16,7 @@ works similar to [LoginRequiredMixin](https://docs.djangoproject.com/en/5.1/topi
 also the `dispatch()` method is async.
 
 ```python
-from django_async_extensions.acontrib.auth.mixins import AsyncLoginRequiredMixin
+from django_async_extensions.contrib.auth.mixins import AsyncLoginRequiredMixin
 
 
 class MyView(AsyncLoginRequiredMixin, AsyncView):

@@ -15,12 +15,12 @@ from django.views.generic.dates import (
     DateMixin,
 )
 
-from django_async_extensions.aviews.generic.base import AsyncView
-from django_async_extensions.aviews.generic.detail import (
+from django_async_extensions.views.generic.base import AsyncView
+from django_async_extensions.views.generic.detail import (
     AsyncBaseDetailView,
     AsyncSingleObjectTemplateResponseMixin,
 )
-from django_async_extensions.aviews.generic.list import (
+from django_async_extensions.views.generic.list import (
     AsyncMultipleObjectMixin,
     AsyncMultipleObjectTemplateResponseMixin,
 )

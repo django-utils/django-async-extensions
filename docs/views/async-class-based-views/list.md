@@ -3,7 +3,7 @@
 `AsyncListView` generic view
 
 ```python
-from django_async_extensions.aviews.generic import AsyncListView
+from django_async_extensions.views.generic import AsyncListView
 
 class MyListView(AsyncListView):
     model = MyModel
@@ -20,13 +20,13 @@ class MyListView(AsyncListView):
 
 *Ancestors (MRO)*:
 
-1. [django-async-extensions.aviews.generic.list.AsyncMultipleObjectTemplateResponseMixin](mixins-multiple-object.md#asyncmultipleobjecttemplateresponsemixin)
-2. [djangoasync-extensions.aviews.generic.base.AsyncTemplateResponseMixin](mixins-simple.md#asynctemplateresponsemixin)
+1. [django-async-extensions.views.generic.list.AsyncMultipleObjectTemplateResponseMixin](mixins-multiple-object.md#asyncmultipleobjecttemplateresponsemixin)
+2. [django-async-extensions.views.generic.base.AsyncTemplateResponseMixin](mixins-simple.md#asynctemplateresponsemixin)
 3. [django.views.generic.base.TemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.TemplateResponseMixin)
-4. [django_async_extensions.aviews.generic.list.AsyncBaseListView](list.md#asyncbaselistview)
-5. [django_async_extensions.aviews.generic.list.AsyncMultipleObjectMixin](mixins-multiple-object.md#asyncmultipleobjectmixin)
-6. [django_async_extensions.aviews.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
-7. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+4. [django_async_extensions.views.generic.list.AsyncBaseListView](list.md#asyncbaselistview)
+5. [django_async_extensions.views.generic.list.AsyncMultipleObjectMixin](mixins-multiple-object.md#asyncmultipleobjectmixin)
+6. [django_async_extensions.views.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
+7. [django_async_extensions.views.generic.base.AsyncView](base.md#asyncview)
 8. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
 
 

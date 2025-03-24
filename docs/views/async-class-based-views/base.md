@@ -3,7 +3,7 @@
 async CBVs are supported via the `AsyncView` class.
 
 ```python
-from django_async_extensions.aviews.generic import AsyncView
+from django_async_extensions.views.generic import AsyncView
 
 
 class MyView(AsyncView):
@@ -22,7 +22,7 @@ the `AsyncView` works similar to django's [View](https://docs.djangoproject.com/
 for easy use an async version of `TemplateView` is available
 
 ```python
-from django_async_extensions.aviews.generic import AsyncTemplateView
+from django_async_extensions.views.generic import AsyncTemplateView
 
 class MyTemplateView(AsyncTemplateView):
     template_name = "template.html"
@@ -32,10 +32,10 @@ class MyTemplateView(AsyncTemplateView):
 
 *Ancestors (MRO)*:
 
-1. [django_async_extensions.aviews.generic.base.AsyncTemplateResponseMixin](mixins-simple.md#asynctemplateresponsemixin)
+1. [django_async_extensions.views.generic.base.AsyncTemplateResponseMixin](mixins-simple.md#asynctemplateresponsemixin)
 2. [django.views.generic.base.TemplateResponseMixin](https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.TemplateResponseMixin)
-3. [django_async_extensions.aviews.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
-4. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+3. [django_async_extensions.views.generic.base.AsyncContextMixin](mixins-simple.md#asynccontextmixin)
+4. [django_async_extensions.views.generic.base.AsyncView](base.md#asyncview)
 5. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)
 
 
@@ -44,7 +44,7 @@ class MyTemplateView(AsyncTemplateView):
 an async version of `RedirectView` is also available
 
 ```python
-from django_async_extensions.aviews.generic import AsyncRedirectView
+from django_async_extensions.views.generic import AsyncRedirectView
 
 class ThisRedirectView(AsyncRedirectView):
     pattern_name = "that-view"
@@ -54,6 +54,6 @@ class ThisRedirectView(AsyncRedirectView):
 
 *Ancestors (MRO)*:
 
-1. [django_async_extensions.aviews.generic.base.AsyncView](base.md#asyncview)
+1. [django_async_extensions.views.generic.base.AsyncView](base.md#asyncview)
 2. [django.views.generic.base.RedirectView](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#redirectview)
 3. [django.views.generic.base.View](https://docs.djangoproject.com/en/5.1/ref/class-based-views/base/#django.views.generic.base.View)

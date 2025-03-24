@@ -7,7 +7,7 @@ from django.test import Client
 from django.test.client import RequestFactory
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 
-from django_async_extensions.aviews.generic.base import AsyncView
+from django_async_extensions.views.generic.base import AsyncView
 
 from .models import Artist, Author, Book, Page
 
