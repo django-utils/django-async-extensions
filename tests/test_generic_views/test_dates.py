@@ -1,10 +1,10 @@
 import datetime
 
 import pytest
-from django.db import connection
 from pytest_django.asserts import assertNumQueries
 
 from django.core.exceptions import ImproperlyConfigured
+from django.db import connection
 from django.test import Client
 from django.test.utils import TZ_SUPPORT
 
@@ -366,7 +366,7 @@ class TestYearArchiveView(TestDataMixin):
         BaseDateListView.get().
         """
         mock = mocker.patch(
-            "django_async_extensions.aviews.generic.list.AsyncMultipleObjectMixin.get_context_data"
+            "django_async_extensions.views.generic.list.AsyncMultipleObjectMixin.get_context_data"
         )
         BookSigning.objects.create(event_date=datetime.datetime(2008, 4, 2, 12, 0))
         with pytest.raises(

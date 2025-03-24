@@ -8,12 +8,12 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.test import AsyncClient, AsyncRequestFactory
 
-from django_async_extensions.acontrib.auth.mixins import (
+from django_async_extensions.contrib.auth.mixins import (
     AsyncLoginRequiredMixin,
     AsyncPermissionRequiredMixin,
     AsyncUserPassesTestMixin,
 )
-from django_async_extensions.aviews.generic.base import AsyncView
+from django_async_extensions.views.generic.base import AsyncView
 
 aclient = AsyncClient()
 

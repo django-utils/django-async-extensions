@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 
-from django_async_extensions.acore.paginator import AsyncPaginator
-from django_async_extensions.aviews import generic
+from django_async_extensions.core.paginator import AsyncPaginator
+from django_async_extensions.views import generic
 
 from .forms import (
     ContactForm,

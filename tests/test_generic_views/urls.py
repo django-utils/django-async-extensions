@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path, re_path
 from django.views.decorators.cache import cache_page
 
-from django_async_extensions.aviews.generic import AsyncTemplateView, dates
+from django_async_extensions.views.generic import AsyncTemplateView, dates
 
 from .models import Book
 from . import views

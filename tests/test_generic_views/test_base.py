@@ -9,7 +9,7 @@ from django.urls import resolve
 
 import pytest
 
-from django_async_extensions.aviews.generic import (
+from django_async_extensions.views.generic import (
     AsyncView,
     AsyncTemplateView,
     AsyncRedirectView,

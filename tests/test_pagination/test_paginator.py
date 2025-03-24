@@ -12,7 +12,7 @@ from django.core.paginator import (
     UnorderedObjectListWarning,
 )
 
-from django_async_extensions.acore.paginator import AsyncPaginator
+from django_async_extensions.core.paginator import AsyncPaginator
 
 from .custom import AsyncValidAdjacentNumsPaginator
 from .models import Article

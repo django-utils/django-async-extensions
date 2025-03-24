@@ -1,6 +1,6 @@
 from django import forms
 
-from django_async_extensions.aforms.models import AsyncModelForm
+from django_async_extensions.forms.models import AsyncModelForm
 
 from .models import Author, Artist
 
