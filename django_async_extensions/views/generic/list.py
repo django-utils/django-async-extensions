@@ -4,8 +4,8 @@ from django.db.models import QuerySet
 from django.http import Http404
 from django.utils.translation import gettext as _
 
-from django_async_extensions.acore.paginator import AsyncPaginator
-from django_async_extensions.aviews.generic.base import (
+from django_async_extensions.core.paginator import AsyncPaginator
+from django_async_extensions.views.generic.base import (
     AsyncView,
     AsyncContextMixin,
     AsyncTemplateResponseMixin,

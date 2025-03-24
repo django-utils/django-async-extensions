@@ -4,13 +4,13 @@ from django.forms import Form
 from django.forms import models as model_forms
 from django.http import HttpResponseRedirect
 
-from django_async_extensions.aforms.models import AsyncModelForm
-from django_async_extensions.aviews.generic.base import (
+from django_async_extensions.forms.models import AsyncModelForm
+from django_async_extensions.views.generic.base import (
     AsyncView,
     AsyncContextMixin,
     AsyncTemplateResponseMixin,
 )
-from django_async_extensions.aviews.generic.detail import (
+from django_async_extensions.views.generic.detail import (
     AsyncSingleObjectMixin,
     AsyncBaseDetailView,
     AsyncSingleObjectTemplateResponseMixin,

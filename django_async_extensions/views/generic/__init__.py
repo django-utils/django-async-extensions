@@ -1,9 +1,9 @@
-from django_async_extensions.aviews.generic.base import (
+from django_async_extensions.views.generic.base import (
     AsyncView,
     AsyncTemplateView,
     AsyncRedirectView,
 )
-from django_async_extensions.aviews.generic.dates import (
+from django_async_extensions.views.generic.dates import (
     AsyncArchiveIndexView,
     AsyncDateDetailView,
     AsyncDayArchiveView,
@@ -12,14 +12,14 @@ from django_async_extensions.aviews.generic.dates import (
     AsyncWeekArchiveView,
     AsyncYearArchiveView,
 )
-from django_async_extensions.aviews.generic.detail import AsyncDetailView
-from django_async_extensions.aviews.generic.edit import (
+from django_async_extensions.views.generic.detail import AsyncDetailView
+from django_async_extensions.views.generic.edit import (
     AsyncCreateView,
     AsyncDeleteView,
     AsyncFormView,
     AsyncUpdateView,
 )
-from django_async_extensions.aviews.generic.list import AsyncListView
+from django_async_extensions.views.generic.list import AsyncListView
 
 
 __all__ = [
