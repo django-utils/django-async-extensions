@@ -15,7 +15,7 @@ and using querysets in an async environment is different from using querysets in
 #### Example of list pagination
 
 ```pycon
-In [1]: from django_async_extensions.acore.paginator import AsyncPaginator
+In [1]: from django_async_extensions.core.paginator import AsyncPaginator
 
 In [2]: objects = ["john", "paul", "george", "ringo"]
 
@@ -92,7 +92,7 @@ In [2]: objs = [User(username=f"test{i}", password="testpass123") for i in range
 In [3]: User.objects.bulk_create(objs)
 Out[3]: [<User: test1>, <User: test2>, <User: test3>, <User: test4>]
 
-In [4]: from django_async_extensions.acore.paginator import AsyncPaginator
+In [4]: from django_async_extensions.core.paginator import AsyncPaginator
 
 In [5]: users = User.objects.order_by("username")
 
