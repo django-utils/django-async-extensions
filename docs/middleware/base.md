@@ -12,6 +12,9 @@ with the following specification:
 ```
 where `get_response` is an **async function**, sync functions are not supported and **will raise** an error.
 
+**Note:** you can use middlewares drove from this base class with normal django middlewares, you can even write sync views
+`get_response` is usually provided by django, so you don't have to worry about it being async.
+
 ----------------------------
 
 other methods are as follows:
