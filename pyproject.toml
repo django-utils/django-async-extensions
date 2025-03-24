@@ -1,6 +1,6 @@
 [project]
 name = "django-async-extensions"
-version = "0.0.4"
+version = "0.0.5"
 description = "provide async capable stuff for django"
 authors = [
     {name = "amirreza",email = "amir.rsf1380@gmail.com"}

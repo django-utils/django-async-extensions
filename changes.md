@@ -1,3 +1,11 @@
+### Version 0.0.5
+
+* added make_middleware_decorator and related utils
+
+Backwards incompatible change:
+
+* removed the `a` prefix from directory names
+
 ### Version 0.0.4
 
 * added base async middleware

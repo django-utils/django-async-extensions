@@ -1,2 +1,2 @@
-__version__ = "0.0.4"
-version_name = "Great Expectations"
+__version__ = "0.0.5"
+version_name = "Brave New World"
