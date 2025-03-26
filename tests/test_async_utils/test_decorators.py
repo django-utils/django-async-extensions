@@ -12,9 +12,6 @@ from django_async_extensions.utils.decorators import decorator_from_middleware
 
 
 class ProcessViewMiddleware(AsyncMiddlewareMixin):
-    def __init__(self, get_response):
-        self.get_response = get_response
-
     async def process_view(self, request, view_func, view_args, view_kwargs):
         pass
 
@@ -49,9 +46,6 @@ async_class_process_view = process_view_dec(AsyncClassProcessView())
 
 
 class FullMiddleware(AsyncMiddlewareMixin):
-    def __init__(self, get_response):
-        self.get_response = get_response
-
     async def process_request(self, request):
         request.process_request_reached = True
 
@@ -72,6 +66,30 @@ class FullMiddleware(AsyncMiddlewareMixin):
 full_dec = decorator_from_middleware(FullMiddleware)
 
 
+class MiddlewareSyncGetResponse(FullMiddleware):
+    sync_capable = True
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    async def __call__(self, request):
+        response = None
+        if hasattr(self, "process_request"):
+            response = await self.process_request(request)
+        response = response or self.get_response(request)
+        if hasattr(self, "process_response"):
+            response = await self.process_response(request, response)
+        return response
+
+
+full_sync_dec = decorator_from_middleware(MiddlewareSyncGetResponse, async_only=False)
+
+
+@full_sync_dec
+def process_view_sync(request):
+    return HttpResponse()
+
+
 class TestDecoratorFromMiddleware:
     """
     Tests for view decorators created using
@@ -89,7 +107,7 @@ class TestDecoratorFromMiddleware:
     async def test_process_view_middleware_async(self, async_rf):
         await async_process_view(async_rf.get("/"))
 
-    async def test_sync_process_view_raises_in_async_context(self):
+    async def test_sync_process_view_in_async_context_errors(self):
         msg = (
             "You cannot use AsyncToSync in the same thread as an async event loop"
             " - just await the async function directly."
@@ -104,7 +122,7 @@ class TestDecoratorFromMiddleware:
         class_process_view(self.rf.get("/"))
 
     async def test_callable_process_view_middleware_async(self, async_rf):
-        await async_process_view(async_rf.get("/"))
+        await async_class_process_view(async_rf.get("/"))
 
     def test_full_dec_normal(self):
         """
@@ -130,6 +148,38 @@ class TestDecoratorFromMiddleware:
         """
 
         @full_dec
+        async def normal_view(request):
+            template = engines["django"].from_string("Hello world")
+            return HttpResponse(template.render())
+
+        request = async_rf.get("/")
+        await normal_view(request)
+        assert getattr(request, "process_request_reached", False)
+        assert getattr(request, "process_view_reached", False)
+        # process_template_response must not be called for HttpResponse
+        assert getattr(request, "process_template_response_reached", False) is False
+        assert getattr(request, "process_response_reached", False)
+
+    def test_full_sync_dec_normal(self):
+        @full_sync_dec
+        def normal_view(request):
+            template = engines["django"].from_string("Hello world")
+            return HttpResponse(template.render())
+
+        request = self.rf.get("/")
+        normal_view(request)
+        assert getattr(request, "process_request_reached", False)
+        assert getattr(request, "process_view_reached", False)
+        # process_template_response must not be called for HttpResponse
+        assert getattr(request, "process_template_response_reached", False) is False
+        assert getattr(request, "process_response_reached", False)
+
+    async def test_full_sync_dec_normal_async(self, async_rf):
+        """
+        All methods of middleware are called for normal HttpResponses
+        """
+
+        @full_sync_dec
         async def normal_view(request):
             template = engines["django"].from_string("Hello world")
             return HttpResponse(template.render())
@@ -176,6 +226,60 @@ class TestDecoratorFromMiddleware:
         """
 
         @full_dec
+        async def template_response_view(request):
+            template = engines["django"].from_string("Hello world")
+            return TemplateResponse(request, template)
+
+        request = async_rf.get("/")
+        response = await template_response_view(request)
+        assert getattr(request, "process_request_reached", False)
+        assert getattr(request, "process_view_reached", False)
+        assert getattr(request, "process_template_response_reached", False)
+        # response must not be rendered yet.
+        assert response._is_rendered is False
+        # process_response must not be called until after response is rendered,
+        # otherwise some decorators like csrf_protect and gzip_page will not
+        # work correctly. See #16004
+        assert getattr(request, "process_response_reached", False) is False
+        await sync_to_async(response.render)()
+        assert getattr(request, "process_response_reached", False)
+        # process_response saw the rendered content
+        assert request.process_response_content == b"Hello world"
+
+    def test_full_sync_dec_templateresponse(self):
+        """
+        All methods of middleware are called for TemplateResponses in
+        the right sequence.
+        """
+
+        @full_sync_dec
+        def template_response_view(request):
+            template = engines["django"].from_string("Hello world")
+            return TemplateResponse(request, template)
+
+        request = self.rf.get("/")
+        response = template_response_view(request)
+        assert getattr(request, "process_request_reached", False)
+        assert getattr(request, "process_view_reached", False)
+        assert getattr(request, "process_template_response_reached", False)
+        # response must not be rendered yet.
+        assert response._is_rendered is False
+        # process_response must not be called until after response is rendered,
+        # otherwise some decorators like csrf_protect and gzip_page will not
+        # work correctly. See #16004
+        assert getattr(request, "process_response_reached", False) is False
+        response.render()
+        assert getattr(request, "process_response_reached", False)
+        # process_response saw the rendered content
+        assert request.process_response_content == b"Hello world"
+
+    async def test_full_sync_dec_templateresponse_async(self, async_rf):
+        """
+        All methods of middleware are called for TemplateResponses in
+        the right sequence.
+        """
+
+        @full_sync_dec
         async def template_response_view(request):
             template = engines["django"].from_string("Hello world")
             return TemplateResponse(request, template)
