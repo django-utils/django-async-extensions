@@ -3,7 +3,7 @@ from functools import wraps
 from asgiref.sync import async_to_sync, iscoroutinefunction, sync_to_async
 
 
-def decorator_from_middleware_with_args(middleware_class):
+def decorator_from_middleware_with_args(middleware_class, async_only=True):
     """
     Like decorator_from_middleware, but return a function
     that accepts the arguments to be passed to the middleware_class.
@@ -16,22 +16,31 @@ def decorator_from_middleware_with_args(middleware_class):
          def my_view(request):
              # ...
     """
-    return make_middleware_decorator(middleware_class)
+    return make_middleware_decorator(middleware_class, async_only=async_only)
 
 
-def decorator_from_middleware(middleware_class):
+def decorator_from_middleware(middleware_class, async_only=True):
     """
     Given a middleware class (not an instance), return a view decorator. This
     lets you use middleware functionality on a per-view basis. The middleware
     is created with no params passed.
     """
-    return make_middleware_decorator(middleware_class)()
+    return make_middleware_decorator(middleware_class, async_only=async_only)()
 
 
-def make_middleware_decorator(middleware_class):
+def make_middleware_decorator(middleware_class, async_only=True):
     def _make_decorator(*m_args, **m_kwargs):
         def _decorator(view_func):
-            middleware = middleware_class(view_func, *m_args, **m_kwargs)
+            _view_func = view_func
+            if all(
+                [
+                    not iscoroutinefunction(view_func),
+                    not iscoroutinefunction(getattr(view_func, "__call__", None)),
+                    async_only,
+                ]
+            ):
+                _view_func = sync_to_async(view_func)
+            middleware = middleware_class(_view_func, *m_args, **m_kwargs)
 
             async def _pre_process_request(request, *args, **kwargs):
                 if hasattr(middleware, "process_request"):
@@ -87,7 +96,9 @@ def make_middleware_decorator(middleware_class):
                         return await middleware.process_response(request, response)
                 return response
 
-            if iscoroutinefunction(view_func):
+            if iscoroutinefunction(view_func) or iscoroutinefunction(
+                getattr(view_func, "__call__", view_func)
+            ):
 
                 async def _view_wrapper(request, *args, **kwargs):
                     result = await _pre_process_request(request, *args, **kwargs)

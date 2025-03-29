@@ -6,9 +6,6 @@ they work almost exactly like django's [decorator_from_middleware](https://docs.
 and [decorator_from_middleware_with_args](https://docs.djangoproject.com/en/5.1/ref/utils/#django.utils.decorators.decorator_from_middleware_with_args) 
 but it expects an async middleware as described in [AsyncMiddlewareMixin](base.md)
 
-**Important:** if you are using a middleware that inherits from [AsyncMiddlewareMixin](base.md) you can only decorate async views
-if you need to decorate a sync view change middleware's `__init__()` method to accept async `get_response` argument.
-
 with an async view
 ```python
 from django.http.response import HttpResponse
@@ -30,12 +27,18 @@ async def my_view(request):
 ```
 
 
-if you need to use a sync view design your middleware like this
+if your view is sync, it'll be wrapped in `sync_to_async` before getting passed down to middleware.
+
+if you need, you can disable this by passing `async_only=False`.
+note that the middlewares presented in this package will error if you do that, so you have to override the `__init__()` and `__call__()` methods to handle that.
+
 ```python
-from django_async_extensions.middleware.base import AsyncMiddlewareMixin
+from django.http.response import HttpResponse
 
 from asgiref.sync import iscoroutinefunction, markcoroutinefunction
 
+from django_async_extensions.middleware.base import AsyncMiddlewareMixin
+from django_async_extensions.utils.decorators import decorator_from_middleware
 
 class MyMiddleware(AsyncMiddlewareMixin):
     sync_capable = True
@@ -51,6 +54,24 @@ class MyMiddleware(AsyncMiddlewareMixin):
         if self.async_mode:
             # Mark the class as async-capable.
             markcoroutinefunction(self)
+            
+    async def __call__(self, request):
+        response = None
+        if hasattr(self, "process_request"):
+            response = await self.process_request(request)
+        response = response or self.get_response(request) # here call the method in a sync manner, or handle it in another way
+        if hasattr(self, "process_response"):
+            response = await self.process_response(request, response)
+        return response
 
-        super().__init__()
+    async def process_request(self, request):
+        return HttpResponse()
+
+
+deco = decorator_from_middleware(MyMiddleware, async_only=False)
+
+
+@deco
+def my_view(request):
+    return HttpResponse()
 ```
