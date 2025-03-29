@@ -31,4 +31,6 @@ class PytestTestRunner:
         if self.keepdb:
             argv.append("--reuse-db")
 
+        argv.append("--noconftest")
+
         return pytest.main(argv)
