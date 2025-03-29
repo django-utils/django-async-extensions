@@ -1,6 +1,6 @@
 from django.conf.urls.i18n import i18n_patterns
 from django.http import HttpResponse, StreamingHttpResponse
-from django.urls import path
+from django.urls import path, re_path
 from django.utils.translation import gettext_lazy as _
 
 
@@ -14,6 +14,14 @@ async def stream_http_generator():
 
 
 urlpatterns = [
+    path("noslash", views.empty_view),
+    path("slash/", views.empty_view),
+    path("needsquoting#/", views.empty_view),
+    # Accepts paths with two leading slashes.
+    re_path(r"^(.+)/security/$", views.empty_view),
+    # Should not append slash.
+    path("sensitive_fbv/", views.sensitive_fbv),
+    path("sensitive_cbv/", views.SensitiveCBV.as_view()),
     path("middleware_exceptions/view/", views.normal_view),
     path("middleware_exceptions/error/", views.server_error),
     path("middleware_exceptions/permission_denied/", views.permission_denied),
