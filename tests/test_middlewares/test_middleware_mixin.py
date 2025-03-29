@@ -6,6 +6,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.http.response import HttpResponse
 
 from django_async_extensions.middleware.base import AsyncMiddlewareMixin
+from django_async_extensions.middleware.gzip import AsyncGZipMiddleware
 from django_async_extensions.middleware.http import AsyncConditionalGetMiddleware
 from django_async_extensions.middleware.locale import AsyncLocaleMiddleware
 from django_async_extensions.middleware.security import AsyncSecurityMiddleware
@@ -37,6 +38,7 @@ class TestMiddlewareMixin:
         AsyncSecurityMiddleware,
         AsyncLocaleMiddleware,
         AsyncConditionalGetMiddleware,
+        AsyncGZipMiddleware,
     ]
 
     def test_repr(self):
