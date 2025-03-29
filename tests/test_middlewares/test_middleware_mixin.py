@@ -6,6 +6,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.http.response import HttpResponse
 
 from django_async_extensions.middleware.base import AsyncMiddlewareMixin
+from django_async_extensions.middleware.clickjacking import AsyncXFrameOptionsMiddleware
 from django_async_extensions.middleware.common import (
     AsyncBrokenLinkEmailsMiddleware,
     AsyncCommonMiddleware,
@@ -45,6 +46,7 @@ class TestMiddlewareMixin:
         AsyncGZipMiddleware,
         AsyncCommonMiddleware,
         AsyncBrokenLinkEmailsMiddleware,
+        AsyncXFrameOptionsMiddleware,
     ]
 
     def test_repr(self):
