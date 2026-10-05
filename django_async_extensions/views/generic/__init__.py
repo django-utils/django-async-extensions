@@ -21,7 +21,6 @@ from django_async_extensions.views.generic.edit import (
 )
 from django_async_extensions.views.generic.list import AsyncListView
 
-
 __all__ = [
     "AsyncView",
     "AsyncTemplateView",
