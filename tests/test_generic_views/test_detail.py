@@ -11,7 +11,6 @@ from django_async_extensions.views.generic.base import AsyncView
 
 from .models import Artist, Author, Book, Page
 
-
 client = Client()
 
 

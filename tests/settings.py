@@ -13,7 +13,6 @@
 # file for each of the backends you test against.
 import os
 
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
